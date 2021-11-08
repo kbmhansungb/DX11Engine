@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <ProjectOutputs>
+    <ProjectOutput>
+      <FullPath>D:\VisualStudio\DX11Engine_update_multiWindow\Debug\DX11Engine.exe</FullPath>
+    </ProjectOutput>
+  </ProjectOutputs>
+  <ContentFiles>
+    <ContentFile>
+      <FullPath>D:\VisualStudio\DX11Engine_update_multiWindow\Debug\Shader\ps_LightDepth.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\VisualStudio\DX11Engine_update_multiWindow\Debug\Shader\process_Light_ps.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\VisualStudio\DX11Engine_update_multiWindow\Debug\Shader\ps_Lighting.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\VisualStudio\DX11Engine_update_multiWindow\Debug\Shader\vs_Instance.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\VisualStudio\DX11Engine_update_multiWindow\Debug\Shader\ps_Rendering.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\VisualStudio\DX11Engine_update_multiWindow\Debug\Shader\vs_MeshMesh.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\VisualStudio\DX11Engine_update_multiWindow\Debug\Shader\vs_Sprite.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\VisualStudio\DX11Engine_update_multiWindow\Debug\Shader\vs_Substance.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\VisualStudio\DX11Engine_update_multiWindow\Debug\Shader\ps_Terrain.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\VisualStudio\DX11Engine_update_multiWindow\Debug\Shader\vs_Terrain.cso</FullPath>
+    </ContentFile>
+  </ContentFiles>
+  <SatelliteDlls />
+  <NonRecipeFileRefs />
+</Project>
