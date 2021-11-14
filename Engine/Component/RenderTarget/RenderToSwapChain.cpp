@@ -4,11 +4,32 @@
 
 using namespace std;
 
+RenderToSwapChain::RenderToSwapChain() :
+	display(SafePtr<Display>()),
+	depth_stencil_texture_desc(DXGI_FORMAT_D24_UNORM_S8_UINT, 0, 0)
+{
+	// swapChainDesc
+	swapChainDesc.BufferDesc.RefreshRate.Numerator = 60;
+	swapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
+	swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+	swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+	swapChainDesc.SampleDesc.Count = 1;
+	swapChainDesc.SampleDesc.Quality = 0;
+	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	swapChainDesc.BufferCount = 1;
+	swapChainDesc.Windowed = true;
+	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+
+	// depthStencilBufferDesc
+	depth_stencil_texture_desc.MipLevels = 1;
+	depth_stencil_texture_desc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+}
+
 RenderToSwapChain::~RenderToSwapChain()
 {
 }
-
-type_index RenderToSwapChain::get_class_type() { return typeid(RenderToSwapChain); }
 
 RenderToSwapChain::RenderToSwapChain(SafePtr<Display> display) :
 	display(display),
@@ -75,6 +96,16 @@ void RenderToSwapChain::ClearRenderTarget(SubGraphics* sub_graphics)
 void RenderToSwapChain::Present(SubGraphics* sub_graphics)
 {
 	this->_swapchain->Present(0, 0);
+}
+
+void RenderToSwapChain::draw_detail_view()
+{
+	Component::draw_detail_view();
+
+	if (ImGui::CollapsingHeader("Render to swap chain"))
+	{
+		ImGui::base_field(display);
+	}
 }
 
 void RenderToSwapChain::response_resize_display(UINT width, UINT height)

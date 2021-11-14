@@ -153,6 +153,7 @@ void MeshPipe::draw_mesh_only(SubGraphics* sub_graphics, ConstantBuffer<BTYPE::C
 {
 	if (is_draw_able() == false) return;
 
+	shader->set_texture(sub_graphics);
 	smart_load(sub_graphics);
 	sub_graphics->Device_context->VSSetShader(
 		vs.GetShader(),

@@ -5,4 +5,5 @@ struct DF_INPUT
     float4 result_color     : SV_Target2;
     float4 light_weight     : SV_Target3;
     float4 world_position   : SV_Target4;
+    float4 depth            : SV_Target5;
 };

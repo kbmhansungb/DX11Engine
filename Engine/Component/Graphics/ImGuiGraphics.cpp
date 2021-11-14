@@ -109,7 +109,8 @@ void ImGuiGraphics::awake()
 		style->WindowRounding = 4.0f;
 	}
 
-	HWND parent_window = this->Render_target.cast<RenderToSwapChain>()->display->renderWindow->GetHWND();
+	auto render_win = this->Render_target.cast<RenderToSwapChain>()->display->renderWindow.get();
+	HWND parent_window = render_win->GetHWND();
 	ImGui_ImplWin32_Init(parent_window);
 	ImGui_ImplDX11_Init(
 		this->get_owner()->this_scene->this_engine->Device.Get(),

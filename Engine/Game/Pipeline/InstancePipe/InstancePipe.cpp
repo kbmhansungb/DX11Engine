@@ -44,6 +44,7 @@ void InstancePipe::draw_mesh_only(SubGraphics* sub_graphics, ConstantBuffer<BTYP
 {
 	if (is_draw_able() == false) return;
 
+	shader->set_texture(sub_graphics);
 	smart_load(sub_graphics);
 	sub_graphics->Device_context->VSSetShader(
 		vs.GetShader(),

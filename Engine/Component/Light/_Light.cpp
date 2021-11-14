@@ -14,15 +14,18 @@ void Light::awake()
 	light.apply_changes(con->Device_context.Get());
 
 	rtt_depth.load_resource(this->owner->this_scene->this_engine.get());
-	rtt_LightColor.load_resource(this->owner->this_scene->this_engine.get());
 	create_depth_stencil();
-	light_pos.initialize(con->Device.Get());
 	light.initialize(con->Device.Get());
 	view_projection.initialize(con->Device.Get());
 }
 
 void Light::sleep()
 {
+}
+
+void Light::update()
+{
+	this->update_pos();
 }
 
 void Light::update_stencil(SubGraphics* sub_graphics)
@@ -32,8 +35,8 @@ void Light::update_stencil(SubGraphics* sub_graphics)
 	CD3D11_VIEWPORT viewport;
 	viewport.TopLeftX = 0.f;
 	viewport.TopLeftY = 0.f;
-	viewport.Width = this->light_pos.data.resource;
-	viewport.Height = this->light_pos.data.resource;
+	viewport.Width = rtt_depth.texture_desc.Width;
+	viewport.Height = rtt_depth.texture_desc.Height;
 	viewport.MinDepth = D3D11_MIN_DEPTH;
 	viewport.MaxDepth = D3D11_MAX_DEPTH;
 
@@ -41,11 +44,10 @@ void Light::update_stencil(SubGraphics* sub_graphics)
 
 	// 라이팅 스텐실을 렌더하도록 만든다.
 	ID3D11RenderTargetView* ar[] = {
-		rtt_depth.render_target_view.Get(),
-		rtt_LightColor.render_target_view.Get()
+		rtt_depth.render_target_view.Get()
 	};
 	sub_graphics->Device_context->OMSetRenderTargets(
-		2,
+		1,
 		ar,
 		depth_stencil_view.Get()
 	);
@@ -53,10 +55,6 @@ void Light::update_stencil(SubGraphics* sub_graphics)
 	FLOAT CColor[4] = { 0.f, 0.f, 0.f, 1.f };
 	sub_graphics->Device_context->ClearRenderTargetView(
 		rtt_depth.render_target_view.Get(),
-		CColor
-	);
-	sub_graphics->Device_context->ClearRenderTargetView(
-		rtt_LightColor.render_target_view.Get(),
 		CColor
 	);
 	sub_graphics->Device_context->ClearDepthStencilView(
@@ -93,14 +91,6 @@ void Light::update_stencil(SubGraphics* sub_graphics)
 	view_projection.apply_changes(sub_graphics->Device_context);
 	view_projection.set_constant_buffer(sub_graphics->Device_context);
 	
-	light_pos.data.light_pos.x = owner->pos.m128_f32[0];
-	light_pos.data.light_pos.y = owner->pos.m128_f32[1];
-	light_pos.data.light_pos.z = owner->pos.m128_f32[2];
-	light_pos.data.dir = owner->vecForward;
-	light_pos.apply_changes(sub_graphics->Device_context);
-	light_pos.set_constant_buffer(sub_graphics->Device_context);
-	// 라이팅 연산을 위한 정보들이 먼저 정의 되어야 한다.
-	light.apply_changes(sub_graphics->Device_context);
 	light.set_constant_buffer(sub_graphics->Device_context);
 
 	// ps만 설정하고 vs는 메쉬에 따라 결정되도록 하자.
@@ -140,25 +130,23 @@ void Light::lighting(SubGraphics* sub_graphics)
 	//);
 	default_lighting_shader()->set_mesh_shader(sub_graphics);
 
-	light_pos.set_constant_buffer(sub_graphics->Device_context);
+	light.set_constant_buffer(sub_graphics->Device_context);
 	view_projection.set_constant_buffer(sub_graphics->Device_context, 12);
 
 	owner->world.set_constant_buffer(sub_graphics->Device_context);
 	view_projection.set_constant_buffer(sub_graphics->Device_context, 13);
 
 	ID3D11ShaderResourceView* srv[] = {
-		this->rtt_depth.GetTextureResourceView(),
-		this->rtt_LightColor.GetTextureResourceView()
+		this->rtt_depth.GetTextureResourceView()
 	};
 	sub_graphics->Device_context->PSSetShaderResources(
-		0, 2, srv
+		0, 1, srv
 	);
 	ID3D11SamplerState* ss[] = {
-		this->rtt_depth.sampler_state.Get(),
-		this->rtt_LightColor.sampler_state.Get()
+		this->rtt_depth.sampler_state.Get()
 	};
 	sub_graphics->Device_context->PSSetSamplers(
-		0, 2, ss
+		0, 1, ss
 	);
 
 	mesh->set_sprite_mesh(sub_graphics);
@@ -226,7 +214,23 @@ void Light::draw_detail_view()
 		{
 			light.apply_changes(con->Device_context.Get());
 		}
-
+		if (ImGui::float_field(&light.data.a, "a"))
+		{
+			light.apply_changes(con->Device_context.Get());
+		}
+		if (ImGui::float_field(&light.data.b, "b"))
+		{
+			light.apply_changes(con->Device_context.Get());
+		}
+		std::string ambient_name = "Ambient color##" + StringHelper::ptr_to_string(&light.data.ambient_color);
+		if (ImGui::ColorEdit3(ambient_name.c_str(), &light.data.ambient_color.x))
+		{
+			light.apply_changes(con->Device_context.Get());
+		}
+		if (ImGui::float_field(&light.data.ambient_strength, "Ambient strength"))
+		{
+			light.apply_changes(con->Device_context.Get());
+		}
 		ImGui::NewLine();
 		ImGui::list_field_default(lighting_scenes, "Lighting scene",
 			[=](SafePtr<Scene>& scene)
@@ -235,27 +239,19 @@ void Light::draw_detail_view()
 			});
 		if (this->active)
 		{
-			if (ImGui::float_field(&light_pos.data.resource, "Resource"))
+			float resource = rtt_depth.texture_desc.Width;
+			if (ImGui::float_field(&resource, "Resource"))
 			{
 				rtt_depth.resize_texture(
-					light_pos.data.resource, light_pos.data.resource,
+					resource, resource,
 					this->owner->this_scene->this_engine.get()
 				);
-
-				rtt_LightColor.resize_texture(
-					light_pos.data.resource, light_pos.data.resource,
-					this->owner->this_scene->this_engine.get()
-				);
-
-				this->light_pos.apply_changes(con->Device_context.Get());
-
 				create_depth_stencil();
 			}
 
 			const char* text[] =
 			{
-				"Depth",
-				"LightColor"
+				"Depth"
 			};
 			static int selected = 0;
 			if (ImGui::BeginCombo("ImageSelect", text[selected]))
@@ -266,29 +262,30 @@ void Light::draw_detail_view()
 				{
 					selected = 0;
 				}
-
-				is_selected = false;
-				ImGui::Selectable(text[1], &is_selected);
-				if (is_selected)
-				{
-					selected = 1;
-				}
-
 				ImGui::EndCombo();
 			}
+			ImGui::NewLine();
+			static ImVec2 rec_size = { 300.f, 300.f };
+			ImGui::InputFloat2("Light image size", &rec_size.x);
 			switch (selected)
 			{
 			case 0:
-				ImGui::Image(rtt_depth.GetTextureResourceView(), 
-					ImVec2(light_pos.data.resource, light_pos.data.resource));
-				break;
-			case 1:
-				ImGui::Image(rtt_LightColor.GetTextureResourceView(), 
-					ImVec2(light_pos.data.resource, light_pos.data.resource));
+				ImGui::Image(rtt_depth.GetTextureResourceView(), rec_size);
 				break;
 			}
 		}
 	}
+}
+
+void Light::update_pos()
+{
+	auto ec = EngineContext::get_instance();
+
+	light.data.light_pos.x = owner->pos.m128_f32[0];
+	light.data.light_pos.y = owner->pos.m128_f32[1];
+	light.data.light_pos.z = owner->pos.m128_f32[2];
+	light.data.light_vec = owner->vecForward;
+	light.apply_changes(ec->Device_context.Get());
 }
 
 void Light::create_depth_stencil()
@@ -300,8 +297,8 @@ void Light::create_depth_stencil()
 
 	D3D11_TEXTURE2D_DESC depth_stencil_buf_desc
 		= CD3D11_TEXTURE2D_DESC(DXGI_FORMAT::DXGI_FORMAT_D24_UNORM_S8_UINT, 
-			light_pos.data.resource,
-			light_pos.data.resource);
+			rtt_depth.texture_desc.Width,
+			rtt_depth.texture_desc.Height);
 	depth_stencil_buf_desc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	con->Device->CreateTexture2D(
 		&depth_stencil_buf_desc,

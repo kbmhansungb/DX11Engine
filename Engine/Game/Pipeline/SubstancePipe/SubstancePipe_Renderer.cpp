@@ -131,6 +131,9 @@ void BoneChild::create_bone()
 		bone_structs[index].game_object = now_bone;
 		//ºÎ¸ð º» ÀÎµ¦½º
 		bone_structs[index].parent_index = skeleton->Bones[index].Parent_bone;
+		// Æ®·»½ºÆû ¼³Á¤
+		bone_structs[index].game_object->Adjust()
+			.set_local_transform(skeleton->Bones[index].Local_transform);
 	}
 
 	// ¹öÆÛ »ý¼º
@@ -190,6 +193,7 @@ void SubstancePipe::draw_mesh_only(SubGraphics* sub_graphics)
 {
 	if (is_draw_able() == false) return;
 
+	shader->set_texture(sub_graphics);
 	smart_load(sub_graphics);
 	sub_graphics->Device_context->VSSetShader(
 		vs.GetShader(),

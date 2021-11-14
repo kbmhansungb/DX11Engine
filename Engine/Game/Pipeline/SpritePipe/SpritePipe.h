@@ -40,6 +40,7 @@ namespace SHADER
 		virtual void release_resource(Engine* engine) override;
 
 		void set_mesh_shader(SubGraphics* sub_graphics);
+		void set_texture(SubGraphics* sub_graphics);
 	};
 	REGIST_RESOURCE(MeshShader);
 }

@@ -304,6 +304,15 @@ void SHADER::MeshShader::set_mesh_shader(SubGraphics* sub_graphics)
 	sub_graphics->Device_context->OMSetBlendState(product_ms.blend_state.Get(), nullptr, 0xffffffff);
 	sub_graphics->Device_context->OMSetDepthStencilState(product_ms.depth_stencil_state.Get(), 0);
 
+	// 두번 할당하지 않기 위해서는 draw_mesh_only에서 호출해야 한다.
+	//this->set_texture(sub_graphics);
+
+	sub_graphics->Device_context->IASetPrimitiveTopology(addition_ms.topology);
+	sub_graphics->Device_context->PSSetShader(product_ms.pixel_shader.GetShader(), 0, 0);
+}
+
+void SHADER::MeshShader::set_texture(SubGraphics* sub_graphics)
+{
 	for (auto it = addition_ms.vs_textures.begin(); it != addition_ms.vs_textures.end(); ++it)
 	{
 		if (it->first < 0) continue;
@@ -322,7 +331,4 @@ void SHADER::MeshShader::set_mesh_shader(SubGraphics* sub_graphics)
 		sub_graphics->Device_context
 			->PSSetSamplers(it->first, 1, it->second.get()->sampler_state.GetAddressOf());
 	}
-
-	sub_graphics->Device_context->IASetPrimitiveTopology(addition_ms.topology);
-	sub_graphics->Device_context->PSSetShader(product_ms.pixel_shader.GetShader(), 0, 0);
 }

@@ -53,6 +53,7 @@ void terrain_tool_setting_field()
 // 터레인 관리를 위한 데이터는 이곳에 모인다.
 namespace TERRAIN
 {
+	XMFLOAT3 m_pos;
 	enum class TERRAIN_HEIGHT_TOOL
 	{
 		ADD, SMOOTH, FIT
@@ -201,10 +202,30 @@ namespace TERRAIN
 
 void TerrainRenderer::draw(SubGraphics* sub_graphics)
 {
+	auto CEW = EDITOR::CEW::get_instance();
+	if (CEW->last_select.get() == this->owner.get())
+	{
+		set_brush_shape(TERRAIN::m_pos, TERRAIN::brush_size);
+	}
+	else
+	{
+		set_brush_shape(TERRAIN::m_pos, TERRAIN::brush_size, false);
+	}
+
 	terrain_pipe.draw(sub_graphics, owner->world);
 }
 void TerrainRenderer::draw_mesh_only(SubGraphics* sub_graphics)
 {
+	auto CEW = EDITOR::CEW::get_instance();
+	if (CEW->last_select.get() == this->owner.get())
+	{
+		set_brush_shape(TERRAIN::m_pos, TERRAIN::brush_size);
+	}
+	else
+	{
+		set_brush_shape(TERRAIN::m_pos, TERRAIN::brush_size, false);
+	}
+
 	terrain_pipe.draw_mesh_only(sub_graphics, owner->world);
 }
 
@@ -417,6 +438,7 @@ void TerrainRenderer::fit_height(
 		{
 			vertex.Position.y
 				+= (fit_height - vertex.Position.y)
+				* amount
 				* TERRAIN::brush_weight
 				* delta_time;
 		});
@@ -545,7 +567,7 @@ void TerrainRenderer::paint_texture(
 							map.insert(
 								std::pair(
 									index_arr[i],
-									weight_arr[i] + add_amount
+									weight_arr[i] + add_amount * amount
 								));
 						}
 						else
@@ -553,7 +575,7 @@ void TerrainRenderer::paint_texture(
 							map.insert(
 								std::pair(
 									index_arr[i],
-									weight_arr[i] - add_amount / (float)registed_size
+									weight_arr[i] - add_amount * amount / (float)registed_size
 								));
 						}
 				}
@@ -561,7 +583,7 @@ void TerrainRenderer::paint_texture(
 					map.insert(
 						std::pair(
 							TERRAIN::paint_index,
-							add_amount
+							add_amount * amount
 						));
 
 				std::multimap<float, int> weight_index_map;
@@ -662,6 +684,37 @@ void TerrainRenderer::make_foliage(
 		delta_size++;
 	}
 }
+void TerrainRenderer::set_brush_shape(XMFLOAT3& pos, float b_size, bool is_true)
+{
+	auto ec = EngineContext::get_instance();
+	if (TERRAIN::texture.is_vaild() == false || is_true == false)
+	{
+		ConstantBuffer<BTYPE::CB_TERRAIN_MPOS> t;
+		t.initialize(ec->Device.Get());
+		t.data.m_pos = {0.0f, 0.0f, 0.0f};
+		t.data.b_size = 0.0f;
+		t.apply_changes(ec->Device_context.Get());
+		t.set_constant_buffer(ec->Device_context.Get());
+
+		//ec->Device_context->PSSetSamplers(10, 1, nullptr);
+		//ec->Device_context->PSSetShaderResources(10, 1, nullptr);
+		return;
+	}
+	else
+	{
+		ConstantBuffer<BTYPE::CB_TERRAIN_MPOS> t;
+		t.initialize(ec->Device.Get());
+		t.data.m_pos = pos;
+		t.data.b_size = b_size;
+		t.apply_changes(ec->Device_context.Get());
+		t.set_constant_buffer(ec->Device_context.Get());
+
+		ec->Device_context->PSSetSamplers(10, 1, TERRAIN::texture->GetSamplerStateAddress());
+		ec->Device_context->PSSetShaderResources(10, 1, TERRAIN::texture->GetTextureResourceViewAddress());
+		return;
+	}
+}
+
 //////
 // Terrain tool에 관련된 정보는 여기에 보관한다.
 
@@ -731,25 +784,33 @@ void TerrainRenderer::draw_detail_view()
 
 			if (cew->edwiv->is_selected_window)
 			{
-				// 왼쪽 마우스가 눌렸을 때
-				if (ImGui::GetIO().MouseDown[0])
+
+				// Ray와 terrain의 hit을 구한 후
+				Hit result;
+				this->get_hit_result_by_editor_view(result);
+
+				if (result.is_hit)
 				{
-					// Ray와 terrain의 hit을 구한 후
-					Hit result;
-					this->get_hit_result_by_editor_view(result);
-
-					// 충돌되는 부위가 있을 때.
-					if (result.is_hit)
-					{
-						XMFLOAT3 pos; XMStoreFloat3(&pos, result.position);
-
-						std::vector<std::vector<int>> keys;
-						this->terrain_pipe.mesh->make_relative_keys(pos.x, pos.z, keys, TERRAIN::brush_size);
-						for (auto& key : keys)
-							this->paint_texture(key, pos);
-					}
+					XMFLOAT3 m_pos; XMStoreFloat3(&m_pos, result.position);
+					TERRAIN::m_pos = m_pos;
 				}
-				// end 왼쪽 마우스가 눌렸을 때
+
+				// 충돌되는 부위가 있을 때.
+				if (ImGui::GetIO().MouseDown[0] &&
+					result.is_hit)
+				{
+					XMFLOAT3 pos; XMStoreFloat3(&pos, result.position);
+
+					std::vector<std::vector<int>> keys;
+					this->terrain_pipe.mesh->make_relative_keys(pos.x, pos.z, keys, TERRAIN::brush_size);
+					for (auto& key : keys)
+						this->paint_texture(key, pos);
+				}
+			}
+			else
+			{
+				XMFLOAT3 m_pos{};
+				TERRAIN::m_pos = m_pos;
 			}
 		}
 		break;
@@ -764,64 +825,70 @@ void TerrainRenderer::draw_detail_view()
 
 			if (cew->edwiv->is_selected_window)
 			{
-				// 왼쪽 마우스가 눌렸을 때
-				if (ImGui::GetIO().MouseDown[0])
+
+				// Ray와 terrain의 hit을 구한 후
+				Hit result;
+				this->get_hit_result_by_editor_view(result);
+
+				if (result.is_hit)
 				{
-					// condition
-					if (TERRAIN::is_texture_vaild() == false) break;
+					XMFLOAT3 m_pos; XMStoreFloat3(&m_pos, result.position);
+					TERRAIN::m_pos = m_pos;
+				}
 
-					// Ray와 terrain의 hit을 구한 후
-					Hit result;
-					this->get_hit_result_by_editor_view(result);
+				// 왼쪽 마우스가 눌렸을 때
+				if (ImGui::GetIO().MouseDown[0] &&
+					result.is_hit)
+				{
+					XMFLOAT3 pos; XMStoreFloat3(&pos, result.position);
 
-					// 충돌되는 부위가 있을 때.
-					if (result.is_hit)
+					std::vector<std::vector<int>> keys;
+					this->terrain_pipe.mesh->make_relative_keys(pos.x, pos.z, keys, TERRAIN::brush_size);
+					switch (TERRAIN::terrain_height_tool)
 					{
-						XMFLOAT3 pos; XMStoreFloat3(&pos, result.position);
+					case TERRAIN::TERRAIN_HEIGHT_TOOL::ADD:
+						for (auto& key : keys)
+							this->adjust_height(key, pos);
+						break;
+					case TERRAIN::TERRAIN_HEIGHT_TOOL::SMOOTH:
+					{
+						// 평균값 구하기
+						static int count;
+						static float target_height;
 
-						std::vector<std::vector<int>> keys;
-						this->terrain_pipe.mesh->make_relative_keys(pos.x, pos.z, keys, TERRAIN::brush_size);
-						switch (TERRAIN::terrain_height_tool)
+						count = 0;
+						target_height = 0.0f;
+						for (auto& key : keys)
 						{
-						case TERRAIN::TERRAIN_HEIGHT_TOOL::ADD:
-							for (auto& key : keys)
-								this->adjust_height(key, pos);
-							break;
-						case TERRAIN::TERRAIN_HEIGHT_TOOL::SMOOTH:
+							make_range_no_parallel_for(
+								this, key, pos,
+								[=](make_range_lambda_param)
+								{
+									++count;
+									target_height += vertex.Position.y;
+								});
+						}
+						target_height /= (float)count;
+
+						if (count == 0) break;
+						for (auto& key : keys)
 						{
-							// 평균값 구하기
-							static int count;
-							static float target_height;
-
-							count = 0;
-							target_height = 0.0f;
-							for (auto& key : keys)
-							{
-								make_range_no_parallel_for(
-									this, key, pos,
-									[=](make_range_lambda_param)
-									{
-										++count;
-										target_height += vertex.Position.y;
-									});
-							}
-							target_height /= (float)count;
-
-							if (count == 0) break;
-							for (auto& key : keys)
-							{
-								this->fit_height(key, pos, target_height);
-							}
+							this->fit_height(key, pos, target_height);
 						}
-							break;
-						case TERRAIN::TERRAIN_HEIGHT_TOOL::FIT:
-							for (auto& key : keys)
-								this->fit_height(key, pos, TERRAIN::fit_height);
-							break;
-						}
+					}
+					break;
+					case TERRAIN::TERRAIN_HEIGHT_TOOL::FIT:
+						for (auto& key : keys)
+							this->fit_height(key, pos, TERRAIN::fit_height);
+						break;
 					}
 				}
 				// end 왼쪽 마우스가 눌렸을 때
+			}
+			else
+			{
+				XMFLOAT3 m_pos{};
+				TERRAIN::m_pos = m_pos;
 			}
 		}
 		break;
@@ -832,24 +899,21 @@ void TerrainRenderer::draw_detail_view()
 
 			if (cew->edwiv->is_selected_window)
 			{
-				// 왼쪽 마우스가 눌렸을 때
-				if (ImGui::GetIO().MouseDown[0])
-				{
-					// Ray와 terrain의 hit을 구한 후
-					Hit result;
-					this->get_hit_result_by_editor_view(result);
+				// Ray와 terrain의 hit을 구한 후
+				Hit result;
+				this->get_hit_result_by_editor_view(result);
 
-					// 충돌되는 부위가 있을 때.
-					if (result.is_hit)
-					{
-						XMFLOAT3 pos; XMStoreFloat3(&pos, result.position);
-						make_foliage(
-							pos, 
-							TERRAIN::foliage_index, 
-							TERRAIN::foliage_brush_size,
-							TERRAIN::foliage_size
-						);
-					}
+				// 왼쪽 마우스가 눌렸을 때
+				if (ImGui::GetIO().MouseDown[0] &&
+					result.is_hit)
+				{
+					XMFLOAT3 pos; XMStoreFloat3(&pos, result.position);
+					make_foliage(
+						pos,
+						TERRAIN::foliage_index,
+						TERRAIN::foliage_brush_size,
+						TERRAIN::foliage_size
+					);
 				}
 				// end 왼쪽 마우스가 눌렸을 때
 			}

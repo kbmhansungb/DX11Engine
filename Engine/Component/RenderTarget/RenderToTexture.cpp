@@ -57,7 +57,26 @@ void RenderToTexture::set_render_target(SubGraphics* sub_graphics)
 	viewport.MinDepth = D3D11_MIN_DEPTH;
 	viewport.MaxDepth = D3D11_MAX_DEPTH;
 
-	sub_graphics->Device_context->RSSetViewports(1, &viewport);
+	CD3D11_VIEWPORT viewport2;
+	viewport2.TopLeftX = 0.f;
+	viewport2.TopLeftY = 0.f;
+	viewport2.Width = this->width / 2;
+	viewport2.Height = this->height / 2;
+	viewport2.MinDepth = D3D11_MIN_DEPTH;
+	viewport2.MaxDepth = D3D11_MAX_DEPTH;
+
+	CD3D11_VIEWPORT viewports[8] = {
+		viewport,
+		viewport,
+		viewport,
+		viewport2,
+		viewport,
+		viewport,
+		viewport,
+		viewport
+	};
+
+	sub_graphics->Device_context->RSSetViewports(8, viewports);
 
 	sub_graphics->Device_context->OMSetRenderTargets(render_target_views.size(), render_target_views.data(), depth_stencil_view.Get());
 }
@@ -91,20 +110,6 @@ void RenderToTexture::resize_render_texture(UINT width, UINT height)
 	device->CreateTexture2D(&depth_stencil_desc, 0, this->depth_stencil_texture.GetAddressOf());
 	device->CreateDepthStencilView(depth_stencil_texture.Get(), 0, depth_stencil_view.GetAddressOf());
 
-	//sleep();
-	//awake();
-
-	// 지금은 옆으로 늘어져서 그려지는 거고. 변경을 하면 텍스쳐 크기에 맞춰서 렌더링 됩니다. 네.
-	
-	//render_target_texture_0->release_resource(owner->this_scene->this_engine.get());
-	//render_target_texture_1->release_resource(owner->this_scene->this_engine.get());
-	//render_target_texture_2->release_resource(owner->this_scene->this_engine.get());
-	//render_target_texture_3->release_resource(owner->this_scene->this_engine.get());
-	//render_target_texture_4->release_resource(owner->this_scene->this_engine.get());
-	//render_target_texture_5->release_resource(owner->this_scene->this_engine.get());
-	//render_target_texture_6->release_resource(owner->this_scene->this_engine.get());
-	//render_target_texture_7->release_resource(owner->this_scene->this_engine.get());
-
 	render_target_texture_0->texture_desc.Width = width;
 	render_target_texture_1->texture_desc.Width = width;
 	render_target_texture_2->texture_desc.Width = width;
@@ -122,24 +127,6 @@ void RenderToTexture::resize_render_texture(UINT width, UINT height)
 	render_target_texture_5->texture_desc.Height = height;
 	render_target_texture_6->texture_desc.Height = height;
 	render_target_texture_7->texture_desc.Height = height;
-
-	//render_target_texture_0->load_resource(owner->this_scene->this_engine.get());
-	//render_target_texture_1->load_resource(owner->this_scene->this_engine.get());
-	//render_target_texture_2->load_resource(owner->this_scene->this_engine.get());
-	//render_target_texture_3->load_resource(owner->this_scene->this_engine.get());
-	//render_target_texture_4->load_resource(owner->this_scene->this_engine.get());
-	//render_target_texture_5->load_resource(owner->this_scene->this_engine.get());
-	//render_target_texture_6->load_resource(owner->this_scene->this_engine.get());
-	//render_target_texture_7->load_resource(owner->this_scene->this_engine.get());
-
-	render_target_textures[0] = render_target_texture_0.get();
-	render_target_textures[1] = render_target_texture_1.get();
-	render_target_textures[2] = render_target_texture_2.get();
-	render_target_textures[3] = render_target_texture_3.get();
-	render_target_textures[4] = render_target_texture_4.get();
-	render_target_textures[5] = render_target_texture_5.get();
-	render_target_textures[6] = render_target_texture_6.get();
-	render_target_textures[7] = render_target_texture_7.get();
 
 	render_target_views.resize(render_target_textures.size());
 	for (SIZE_T index = 0; index < render_target_textures.size(); ++index)
@@ -200,7 +187,7 @@ RenderToDeferred::RenderToDeferred(int resource_width, int resource_height) :
 #pragma message (__FILE__ "(" _CRT_STRINGIZE(__LINE__) ")" ": warning: 임시로 여기다 구현함")
 #pragma message (__FILE__ "(" _CRT_STRINGIZE(__LINE__) ")" ": warning: 텍스쳐로 옮겨야 하지 않을까?")
 #pragma message (__FILE__ "(" _CRT_STRINGIZE(__LINE__) ")" ": warning: 근데 지금 텍스쳐 구조가 쓰래기 같아서 안됨..")
-void copy_render_texture(
+void RenderToDeferred::copy_render_texture(
 	SubGraphics* sub_graphics,
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>& texture_2d,
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& shader_resource_view,
@@ -263,10 +250,10 @@ void RenderToDeferred::Present(SubGraphics* sub_graphics)
 		2, 1, wp_ss.GetAddressOf()
 	);
 	sub_graphics->Device_context->PSSetShaderResources(
-		3, 1, wp_srv.GetAddressOf()
+		3, 1, no_srv.GetAddressOf()
 	);
 	sub_graphics->Device_context->PSSetSamplers(
-		3, 1, wp_ss.GetAddressOf()
+		3, 1, no_ss.GetAddressOf()
 	);
 
 	// lighting을 그리는 구간.
@@ -281,26 +268,6 @@ void RenderToDeferred::Present(SubGraphics* sub_graphics)
 		}
 	}
 
-	// world position을 copy해서 넘겨야함.
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> bc_t2d, lw_t2d;
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> bc_srv, lw_srv;
-	Microsoft::WRL::ComPtr<ID3D11SamplerState> bc_ss, lw_ss;
-	copy_render_texture(sub_graphics, bc_t2d, bc_srv, bc_ss, render_target_texture_0.get());
-	copy_render_texture(sub_graphics, lw_t2d, lw_srv, lw_ss, render_target_texture_3.get());
-	ID3D11ShaderResourceView* srv[] = {
-		bc_srv.Get(),
-		lw_srv.Get()
-	};
-	ID3D11SamplerState* ss[] = {
-		bc_ss.Get(),
-		lw_ss.Get()
-	};
-	sub_graphics->Device_context->PSSetShaderResources(
-		0, 2, srv
-	);
-	sub_graphics->Device_context->PSSetSamplers(
-		0, 2, ss
-	);
 	SafePtr<MESH::SpriteMesh> mesh = MESH::default_sprite_mesh(this->owner->this_scene->this_engine.get());
 	SpritePipe::set_sprite_vs(sub_graphics);
 	mesh->set_sprite_mesh(sub_graphics);
@@ -308,7 +275,7 @@ void RenderToDeferred::Present(SubGraphics* sub_graphics)
 	{
 		if (dp.is_vaild())
 		{
-			dp->set_mesh_shader(sub_graphics);
+			dp->deferred_process(this, sub_graphics);
 			mesh->draw_sprite_mesh(sub_graphics);
 		}
 	}
@@ -326,4 +293,9 @@ void RenderToDeferred::draw_detail_view()
 				ImGui::base_field(dp);
 			});
 	}
+}
+
+void DeferredProcess::deferred_process(RenderToDeferred* rtd, SubGraphics* sub_graphics)
+{
+	this->set_mesh_shader(sub_graphics);
 }

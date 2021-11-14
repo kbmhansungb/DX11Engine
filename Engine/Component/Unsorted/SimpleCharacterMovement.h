@@ -13,6 +13,9 @@ public:
 	SafePtr<Display> display;
 	SafePtr<Animator> animator;
 
+	SafePtr<GameObject> translation_target;
+	SafePtr<GameObject> rotation_target;
+
 	float animation_speed;
 	float move_speed;
 	XMVECTOR axis{};

@@ -22,8 +22,8 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> depth_stencil_texture;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> depth_stencil_view;
 public:
+	RenderToSwapChain();
 	virtual ~RenderToSwapChain();
-	virtual std::type_index get_class_type();
 	RenderToSwapChain(SafePtr<Display> display);
 	//virtual bool awake_condition();
 	virtual void awake() override;
@@ -32,10 +32,11 @@ public:
 	virtual void ClearRenderTarget(SubGraphics* sub_graphics) override;
 	// 스왑체인후 리무브 디바이스가 호출된다. 어째서 인가.
 	virtual void Present(SubGraphics* sub_graphics) override;
-
+	virtual void draw_detail_view() override;
 private:
 	void response_resize_display(UINT width, UINT height);
 
 	void clear_swap_chain();
 	void create_swap_chain();
 };
+REGIST_COMPONENT(RenderToSwapChain);

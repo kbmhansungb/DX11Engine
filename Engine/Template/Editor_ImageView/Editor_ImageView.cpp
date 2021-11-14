@@ -211,6 +211,10 @@ void EDITOR::create_image_view_from_deferred_renderer(std::unique_ptr<EditorDeta
 		"World position",
 		rtd->render_target_texture_4.get()
 	);
+	edwiv->allow_textures.emplace_back(
+		"Depth",
+		rtd->render_target_texture_5.get()
+	);
 
 	//auto cew = EDITOR::Create_editor_window::get_instance();
 	//edwiv->invoke_controll(cew->display->renderWindow.get());

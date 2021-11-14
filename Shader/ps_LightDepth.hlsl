@@ -3,7 +3,6 @@
 #include "_DF_INPUT_LIGHT_STENCIL_SVTARGET.fx"
 
 #include "_CONSTANT_10_LIGHT.fx"
-#include "_CONSTANT_11_LIGHT_POS.fx"
 
 Texture2D base_color_texture : register(t0);
 SamplerState base_color_sampler : register(s0);
@@ -15,16 +14,21 @@ DF_INPUT ps(PS_INPUT input)
     //output.Color0 = float4(light_color * light_strength, 1.0f);
     float far = distance(light_pos, (float3) input.world_position);
     float4 base_color = base_color_texture.Sample(base_color_sampler, input.texture_coordinate);
-    //output.depth = input.position.w / input.position.z;
+    
     if (base_color.a >= 1.f)
-    {
-        output.depth = float4(far, far, far, 1.0f);
+    { 
+        output.depth.r = far;
+        output.depth.g = far;
+        output.depth.b = far;
+        output.depth.a = 1.f;
     }
     else
     {
-        output.depth = 0.f;
+        output.depth.r = 0.f;
+        output.depth.g = 0.f;
+        output.depth.b = 0.f;
+        output.depth.a = 0.f;
     }
-    output.light_color = float4(light_color * light_strength / far, 1.0f);
     
     return output;
 }

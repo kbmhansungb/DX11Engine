@@ -6,7 +6,7 @@ class Display final : public Component
 {
 public:
     SafePtr<Display> parentDisplay;
-    LPCWSTR wTitle, wClass;
+    std::wstring wTitle, wClass;
     UINT windowWidth, windowHeight;
     bool mainDisplay;
 
@@ -18,7 +18,6 @@ public:
         UINT windowWidth, UINT windowHeight,
         bool mainDisplay = false);
     virtual ~Display();
-    virtual std::type_index get_class_type();
     virtual void awake() override;
     virtual void sleep() override;
 
@@ -27,5 +26,7 @@ public:
     void window_close_message();
     void resize_window(UINT new_width, UINT new_height);
     Delegate::delegate<UINT, UINT> delegate_resize_window;
+
+    virtual void draw_detail_view() override;
 };
 REGIST_COMPONENT(Display);

@@ -173,11 +173,9 @@ void GameObject::UpdateMatrix()
 	world.apply_changes(device_context);
 
 	// 로컬 벡터 업데이트
-	DirectX::XMMATRIX rotMat = DirectX::XMMatrixRotationRollPitchYaw(
-		XMConvertToRadians(this->rot.m128_f32[0]),
-		XMConvertToRadians(this->rot.m128_f32[1]),
-		XMConvertToRadians(this->rot.m128_f32[2])
-	);
+	XMVECTOR s, r, t;
+	XMMatrixDecompose(&s, &r, &t, world.data.world);
+	DirectX::XMMATRIX rotMat = DirectX::XMMatrixRotationQuaternion(r);
 	this->vecForward = DirectX::XMVector3TransformCoord(TRANSFORM_DEFAULT::FORWARD_VECTOR, rotMat);
 	this->vecRight = DirectX::XMVector3TransformCoord(TRANSFORM_DEFAULT::RIGHT_VECTOR, rotMat);
 	this->vecUp = DirectX::XMVector3TransformCoord(TRANSFORM_DEFAULT::UP_VECTOR, rotMat);

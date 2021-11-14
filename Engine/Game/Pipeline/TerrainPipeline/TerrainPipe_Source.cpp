@@ -539,10 +539,11 @@ void TerrainPipe::draw(SubGraphics* sub_graphics, ConstantBuffer<BTYPE::CB_World
 	if (is_draw_able() == false) return;
 
 	smart_load(sub_graphics);
+	shader->set_mesh_shader(sub_graphics);
+	shader->set_texture(sub_graphics);
 	world.set_constant_buffer(sub_graphics->Device_context);
 	for (auto& pair : this->mesh->terrain_section_data)
 	{
-		shader->set_mesh_shader(sub_graphics);
 		mesh->set_terrain_mesh(sub_graphics, pair.first);
 		mesh->draw_terrain_mesh(sub_graphics, pair.first);
 	}
@@ -561,6 +562,7 @@ void TerrainPipe::draw_mesh_only(SubGraphics* sub_graphics, ConstantBuffer<BTYPE
 	if (is_draw_able() == false) return;
 
 	smart_load(sub_graphics);
+	shader->set_texture(sub_graphics);
 	world.set_constant_buffer(sub_graphics->Device_context);
 	for (auto& pair : this->mesh->terrain_section_data)
 	{

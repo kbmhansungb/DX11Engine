@@ -288,6 +288,9 @@
     <ClCompile Include="Engine\Component\Unsorted\SimpleCharacterMovement.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Game\Pipeline\DefferredPipeline\Blur.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Window\StringHelper.h">
@@ -698,6 +701,9 @@
     <ClInclude Include="Engine\Component\Light\SpotLight.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Game\Pipeline\DefferredPipeline\Blur.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\vs_Substance.hlsl" />
@@ -710,6 +716,7 @@
     <FxCompile Include="Shader\process_Light_ps.hlsl" />
     <FxCompile Include="Shader\ps_LightDepth.hlsl" />
     <FxCompile Include="Shader\ps_Lighting.hlsl" />
+    <FxCompile Include="Shader\process_Blur_ps.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Engine\ImGui\LICENSE.txt" />

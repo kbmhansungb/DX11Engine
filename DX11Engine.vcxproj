@@ -196,6 +196,7 @@
     <ClCompile Include="Engine\Game\Graphics\Buffer\_Buffer.cpp" />
     <ClCompile Include="Engine\Game\Graphics\Lighting.cpp" />
     <ClCompile Include="Engine\Game\Graphics\Shader\__Shader.cpp" />
+    <ClCompile Include="Engine\Game\Pipeline\DefferredPipeline\Blur.cpp" />
     <ClCompile Include="Engine\Game\Pipeline\DefferredPipeline\LightProcess.cpp" />
     <ClCompile Include="Engine\Game\Pipeline\InstancePipe\InstancePipe.cpp" />
     <ClCompile Include="Engine\Game\Pipeline\MeshPipe\MeshPipe.cpp" />
@@ -273,6 +274,7 @@
     <ClInclude Include="Engine\Game\DefaultResourceImporter.h" />
     <ClInclude Include="Engine\Game\Engine_context.h" />
     <ClInclude Include="Engine\Game\Graphics\Lighting.h" />
+    <ClInclude Include="Engine\Game\Pipeline\DefferredPipeline\Blur.h" />
     <ClInclude Include="Engine\Game\Pipeline\DefferredPipeline\_Exclude.h" />
     <ClInclude Include="Engine\Game\Pipeline\DefferredPipeline\LightProcess.h" />
     <ClInclude Include="Engine\Game\Pipeline\InstancePipe\InstancePipe.h" />
@@ -394,6 +396,10 @@
     <ClInclude Include="Engine\Window\_Exclude.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Shader\process_Blur_ps.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ps</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+    </FxCompile>
     <FxCompile Include="Shader\ps_LightDepth.hlsl">
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ps</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>

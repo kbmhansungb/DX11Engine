@@ -7,6 +7,9 @@
   </ProjectOutputs>
   <ContentFiles>
     <ContentFile>
+      <FullPath>D:\VisualStudio\DX11Engine_update_multiWindow\Debug\Shader\process_Blur_ps.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>D:\VisualStudio\DX11Engine_update_multiWindow\Debug\Shader\ps_LightDepth.cso</FullPath>
     </ContentFile>
     <ContentFile>

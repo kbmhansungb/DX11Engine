@@ -54,6 +54,7 @@ class RenderToDeferred;
 class DeferredProcess : public SHADER::MeshShader
 {
 public:
+	virtual void deferred_process(RenderToDeferred* rtd, SubGraphics* sub_graphics);
 };
 
 class RenderToDeferred : public RenderToTexture
@@ -66,5 +67,13 @@ public:
 
 	virtual void Present(SubGraphics* sub_graphics) override;
 	virtual void draw_detail_view() override;
+
+	void copy_render_texture(
+		SubGraphics* sub_graphics,
+		Microsoft::WRL::ComPtr<ID3D11Texture2D>& texture_2d,
+		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& shader_resource_view,
+		Microsoft::WRL::ComPtr<ID3D11SamplerState>& sampler_state,
+		TEXTURE::RenderTargetTexture* render_target_texture
+	);
 };
 REGIST_COMPONENT(RenderToDeferred);

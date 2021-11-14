@@ -78,8 +78,13 @@ void SimpleCharacterMovement::update()
 		float yaw = DirectX::XMConvertToDegrees(std::acos(dot));
 		if (axi < 0.f) yaw = -yaw;
 
-		owner->Adjust().SetRotation(0.f, yaw, 0.f)
-			->AdjustPosition(look_at_pos.x * move_speed * deleta_time, 0.f, look_at_pos.z * move_speed * deleta_time);
+		SafePtr<GameObject> translation_target = this->translation_target;
+		if (translation_target.is_vaild() == false) translation_target = this->owner;
+		translation_target->Adjust().AdjustPosition(look_at_pos.x * move_speed * deleta_time, 0.f, look_at_pos.z * move_speed * deleta_time);
+
+		SafePtr<GameObject> rotation_target = this->rotation_target;
+		if (rotation_target.is_vaild() == false) rotation_target = this->owner;
+		rotation_target->Adjust().SetRotation(0.f, yaw, 0.f);
 	}
 
 	float length = std::min(1.f, std::abs(move_vec.m128_f32[0]) + std::abs(move_vec.m128_f32[2]));
@@ -107,5 +112,8 @@ void SimpleCharacterMovement::draw_detail_view()
 		ImGui::NewLine();
 		ImGui::float_field(&animation_speed, "animation speed");
 		ImGui::float_field(&move_speed, "move speed");
+		ImGui::NewLine();
+		ImGui::base_field(translation_target, "Translation target");
+		ImGui::base_field(rotation_target, "Rotation target");
 	}
 }

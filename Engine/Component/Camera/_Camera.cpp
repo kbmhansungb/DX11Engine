@@ -35,9 +35,11 @@ Camera::Camera(float fov_dgree, UINT width, UINT height, float near_z, float far
 
 void Camera::update_view_projection()
 {
-	// view 설정
 	auto owner = this->owner;
-	DirectX::XMVECTOR Position_vector = owner->GetPosition();
+	// view 설정
+	XMVECTOR s, r, t;
+	XMMatrixDecompose(&s, &r, &t, owner->world.data.world);
+	DirectX::XMVECTOR Position_vector = t;
 	DirectX::XMVECTOR Forward_vector = owner->GetForwardVector();
 	DirectX::XMVECTOR Up_vector = owner->GetUpVecctor();
 	DirectX::XMVECTOR Look_at_point = DirectX::XMVectorAdd(Position_vector, Forward_vector);

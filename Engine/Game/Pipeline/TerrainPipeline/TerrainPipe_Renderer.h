@@ -2,6 +2,19 @@
 
 #include "TerrainPipe_Source.h"
 
+namespace BTYPE
+{
+	struct CB_TERRAIN_MPOS
+	{
+		XMFLOAT3 m_pos;
+		float b_size;
+
+		static UINT T_get_constant_buffer_slot() { return 9; }
+		static bool T_use_in_vs() { return false; }
+		static bool T_use_in_ps() { return true; }
+	};
+}
+
 class TerrainRenderer : public ViaRenderer
 {
 public:
@@ -43,5 +56,6 @@ public:
 		float brush_size,
 		int foliage_size
 	);
+	void set_brush_shape(XMFLOAT3& pos, float b_size, bool is_true = true);
 };
 REGIST_COMPONENT(TerrainRenderer);

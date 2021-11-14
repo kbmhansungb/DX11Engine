@@ -15,11 +15,10 @@ Display::Display(
     parentDisplay(parentDisplay), wTitle(wTitle), wClass(wClass),
     windowWidth(windowWidth), windowHeight(windowHeight),
     mainDisplay(mainDisplay)
-{}
+{
+}
 
 Display::~Display() {}
-
-type_index Display::get_class_type() { return typeid(Display); }
 
 void Display::awake()
 {
@@ -29,8 +28,8 @@ void Display::awake()
     renderWindow = make_unique<WindowInputContainer>(
         get_owner()->this_scene->this_engine->hInstance,
         parentHandle,
-        wTitle,
-        wClass,
+        wTitle.c_str(),
+        wClass.c_str(),
         windowWidth,
         windowHeight);
 
@@ -86,4 +85,30 @@ void Display::resize_window(UINT new_width, UINT new_height)
     windowHeight = new_height;
 
     delegate_resize_window.Invoke(new_width, new_height);
+}
+
+void Display::draw_detail_view()
+{
+    Component::draw_detail_view();
+
+    string name = "Display##" + StringHelper::ptr_to_string(this);
+    if (ImGui::CollapsingHeader(name.c_str()))
+    {
+        ImGui::base_field(parentDisplay, "Parent display");
+        
+        ImGui::wstring_field(wTitle, "Title", 100);
+        
+        ImGui::wstring_field(wClass, "Class", 100);
+        
+        int Width = windowWidth;
+        ImGui::INT_field(&Width, "Width");
+        windowWidth = max(0, Width);
+
+        int Height = windowHeight;
+        ImGui::INT_field(&Height, "Height");
+        windowHeight = max(0, Height);
+
+        string main_display_name = "Main display##" + StringHelper::ptr_to_string(&mainDisplay);
+        ImGui::Checkbox(main_display_name.c_str(), &mainDisplay);
+    }
 }
