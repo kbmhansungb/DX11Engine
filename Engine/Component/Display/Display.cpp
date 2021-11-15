@@ -22,9 +22,11 @@ Display::~Display() {}
 
 void Display::awake()
 {
+    // 부모 디스플레이가 있는 경우 부모 디스플레이의 헨들을 가져옴 21.11.15
     HWND parentHandle = nullptr;
     if (parentDisplay.is_vaild()) parentHandle = parentDisplay.get()->renderWindow->GetHWND();
 
+    // 윈도우를 생성함 21.11.15
     renderWindow = make_unique<WindowInputContainer>(
         get_owner()->this_scene->this_engine->hInstance,
         parentHandle,
@@ -33,57 +35,59 @@ void Display::awake()
         windowWidth,
         windowHeight);
 
-    renderWindow->Delegate_window_size_changed
-        .AddInvoker(this, &Display::resize_window);
+    // 윈도우의 델리게이트를 바인드 21.11.15
+    {
+        // 윈도우의 사이즈 변경 시
+        renderWindow->Delegate_window_size_changed
+            .AddInvoker(this, &Display::resize_window);
 
-    renderWindow->Delegate_window_close
-        .AddInvoker(this, &Display::window_close_message);
+        // 윈도우가 종료될 시
+        renderWindow->Delegate_window_close
+            .AddInvoker(this, &Display::window_close_message);
+    }
 }
 
 void Display::sleep()
 {
-    //// 지우지 않아도 renderWindow가 사라지면서 제거됨.
-    //renderWindow->Delegate_window_size_changed
-    //    .RemoveInvoker(this, &Display::resize_window);
-
     renderWindow.reset();
 }
 
 void Display::update()
 {
+    // 렌더 윈도우가 비정상 적인 경우 디스플레이 컴포넌트를 비활성 상태로 만듬 21.11.15
     if (renderWindow.get() == nullptr)
     {
         this->active = false;
         return;
     }
 
+    // 렌더윈도우가 종료 메세지를 반환한 경우 디스플레이를 종료함 21.11.15
     if (renderWindow->ProcessMessages() == false)
     {
-        if (mainDisplay)
-            get_owner()->this_scene->this_engine->engine_activation = false;
-
-        this->active = false;
+        window_close_message();
         return;
     }
 
+    // 컴포넌트가 여전히 유효한 경우 디바이스 입력을 처리함 21.11.15
     this->renderWindow->callback();
 }
 
 void Display::window_close_message()
 {
+    // 메인 디스플레이인 경우 엔진의 루프문을 종료하고
+    // 윈도우를 제거함 21.11.15
     if (mainDisplay)
         owner->this_scene->this_engine->engine_activation = false;
-    else
-    {
-        this->active = false;
-    }
+    this->active = false;
 }
 
 void Display::resize_window(UINT new_width, UINT new_height)
 {
+    // 디스플레이의 크기 변경
     windowWidth = new_width;
     windowHeight = new_height;
 
+    // 디스플레이 크기 변경 델리게이트 전파
     delegate_resize_window.Invoke(new_width, new_height);
 }
 

@@ -1,11 +1,18 @@
 #pragma once
 
 #include "../_Include.h"
+
+// 레이캐스트를 위해 필요함
 #include "../Physics/_Collider.h"
 
 class SubGraphics;
 namespace DirectX { struct XMMATRIX; }
 
+/// <summary>
+/// 렌더링 파이프라인에서
+/// ViewProjection 매트릭스 버퍼를 관리하는컴포넌트
+/// 21.11.15
+/// </summary>
 class Camera : public Component
 {
 	// 카메라에 사용되는 스트럭트 선언
@@ -24,15 +31,13 @@ public:
 
 #pragma endregion
 
-	// 생성자와 소멸자 선언
-	// 21.11.15
 #pragma region ConDestructor
 
 public:
 	Camera();
 	Camera(UINT width, UINT height, float near_z, float far_z);
 	Camera(float fov_dgree, UINT width, UINT height, float near_z, float far_z);
-	virtual ~Camera() {};
+	~Camera() {};
 
 #pragma endregion
 	
