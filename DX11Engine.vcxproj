@@ -258,7 +258,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Base\BaseSerialize.h" />
-    <ClInclude Include="Engine\Component\Light\SpotLight.h" />
     <ClInclude Include="Engine\Component\Light\_Exclude.h" />
     <ClInclude Include="Engine\Component\Renderer\_Exclude.h" />
     <ClInclude Include="Engine\Component\RenderTarget\RenderToDeferred.h" />

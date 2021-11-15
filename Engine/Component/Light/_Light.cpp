@@ -1,36 +1,37 @@
 #include "_Light.h"
 #include "../Graphics/_SubGraphics.h"
 #include "../RenderTarget/RenderToTexture.h"
-//
-// 라이트를 구현하기 위한 계획을 세워보자.
-//
 
 void Light::awake()
 {
 	HRESULT hr;
 	auto con = EngineContext::get_instance();
 
+	//////
+	// 버퍼 이니셜 라이즈
 	light.initialize(con->Device.Get());
 	light.apply_changes(con->Device_context.Get());
 
+	//////
+	// 리소스 생성
 	rtt_depth.load_resource(this->owner->this_scene->this_engine.get());
 	create_depth_stencil();
 	light.initialize(con->Device.Get());
 	view_projection.initialize(con->Device.Get());
+
+	//////
+	// 델리게이트 바인드
+	owner->Delegate_update_matrix.AddInvoker(this, &Light::update_pos);
 }
 
 void Light::sleep()
 {
 }
 
-void Light::update()
-{
-	this->update_pos();
-}
-
 void Light::update_stencil(SubGraphics* sub_graphics)
 {
 	if (this->active == false) return;
+
 	// viewport 설정
 	CD3D11_VIEWPORT viewport;
 	viewport.TopLeftX = 0.f;
@@ -277,14 +278,14 @@ void Light::draw_detail_view()
 	}
 }
 
-void Light::update_pos()
+void Light::update_pos(SafePtr<GameObject> object)
 {
 	auto ec = EngineContext::get_instance();
 
-	light.data.light_pos.x = owner->pos.m128_f32[0];
-	light.data.light_pos.y = owner->pos.m128_f32[1];
-	light.data.light_pos.z = owner->pos.m128_f32[2];
-	light.data.light_vec = owner->vecForward;
+	light.data.light_pos.x = object->pos.m128_f32[0];
+	light.data.light_pos.y = object->pos.m128_f32[1];
+	light.data.light_pos.z = object->pos.m128_f32[2];
+	light.data.light_vec = object->vecForward;
 	light.apply_changes(ec->Device_context.Get());
 }
 
@@ -316,18 +317,4 @@ void Light::create_depth_stencil()
 		&dsvdesc,
 		depth_stencil_view.GetAddressOf()
 	);
-
-	// 뎁스 스텐실의 쉐이더 리소스 뷰는 어떻게 만드는지 모르겠돠아.
-#pragma message (__FILE__ "(" _CRT_STRINGIZE(__LINE__) ")" ": warning: 모르는 것..")
-	//D3D11_SHADER_RESOURCE_VIEW_DESC srvdesc
-	//	= CD3D11_SHADER_RESOURCE_VIEW_DESC(
-	//		D3D11_SRV_DIMENSION_TEXTURE2D,
-	//		depth_stencil_buf_desc.Format
-	//	);
-	//srvdesc.Texture2D.MipLevels = 1;
-	//con->Device->CreateShaderResourceView(
-	//	depth_stencil_buf.Get(),
-	//	&srvdesc,
-	//	depth_srv.GetAddressOf()
-	//);
 }
