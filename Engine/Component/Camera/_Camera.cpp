@@ -36,7 +36,7 @@ Camera::Camera(float fov_dgree, UINT width, UINT height, float near_z, float far
 void Camera::update_view_projection()
 {
 	auto owner = this->owner;
-	// view 설정
+	// 1. view 설정 21.11.15
 	XMVECTOR s, r, t;
 	XMMatrixDecompose(&s, &r, &t, owner->world.data.world);
 	DirectX::XMVECTOR Position_vector = t;
@@ -45,7 +45,7 @@ void Camera::update_view_projection()
 	DirectX::XMVECTOR Look_at_point = DirectX::XMVectorAdd(Position_vector, Forward_vector);
 	view = XMMatrixLookAtLH(Position_vector, Look_at_point, Up_vector);
 	
-	// projection 설정
+	// 2. projection 설정 21.11.15
 	switch (this->projection_type)
 	{
 	case PROJECTION_TYPE::ORTHO:
@@ -68,7 +68,7 @@ void Camera::update_view_projection()
 		break;
 	}
 
-	// view projection update
+	// 3. view projection 업데이트 21.11.15
 	view_projection_buffer.data
 		.Viewprojection = view * projection;
 	view_projection_buffer
@@ -93,8 +93,6 @@ void Camera::sleep()
 	owner->Delegate_update_matrix.RemoveInvoker(this, &Camera::Delegate_response_update_matrix);
 }
 
-// Link
-
 void Camera::Delegate_response_update_matrix(SafePtr<GameObject> game_object)
 {
 	update_view_projection();
@@ -102,9 +100,12 @@ void Camera::Delegate_response_update_matrix(SafePtr<GameObject> game_object)
 
 void Camera::make_ray_by_screen_pos(Line& ray, int viewport_w, int viewport_h, float mouse_x, float mouse_y)
 {
+	// ray를 구하기 위한 메트릭스 선언 21.11.15
 	XMMATRIX view_inverse = XMMatrixInverse(nullptr, view);
 	XMMATRIX projection_inverse = XMMatrixInverse(nullptr, projection);
+	XMMATRIX to_local_mat = XMMatrixMultiply(projection_inverse, view_inverse);
 
+	// 반직선 값 설정 21.11.15
 	ray.type = Line::TYPE::RAY;
 	ray.origin = XMVectorSet(
 		(mouse_x * 2.0f / static_cast<float>(viewport_w)) - 1.0f,
@@ -119,8 +120,7 @@ void Camera::make_ray_by_screen_pos(Line& ray, int viewport_w, int viewport_h, f
 		1.0f
 	);
 
-	// return ray
-	XMMATRIX to_local_mat = XMMatrixMultiply(projection_inverse, view_inverse);
+	// 반직선 반환 21.11.15
 	ray.origin = XMVector3TransformCoord(ray.origin, to_local_mat);
 	ray.vec = XMVector3TransformCoord(ray.vec, to_local_mat);
 	ray.vec = XMVector3Normalize(ray.vec - ray.origin);
@@ -128,9 +128,15 @@ void Camera::make_ray_by_screen_pos(Line& ray, int viewport_w, int viewport_h, f
 
 void Camera::change_camera_wh(UINT width, UINT height)
 {
+	// 1. 유효성 검사 21.11.15
 	if (width < 1 && height < 1) return;
+
+	// 2. width와 height값 변경 21.11.15
 	this->width = (float)width;
 	this->height = (float)height;
+
+	// 3. 메트릭스 업데이트 21.11.15
+	this->update_view_projection();
 }
 
 #include "../Physics/_Collider.h"
@@ -140,6 +146,7 @@ void Camera::draw_detail_view()
 
 	if (ImGui::CollapsingHeader("Camera"))
 	{
+		// PROJECTION타입 설정 21.11.15
 		std::string projection_type_combo_name
 			= "Type##"
 			+ StringHelper::ptr_to_string(&projection_type);
@@ -163,6 +170,7 @@ void Camera::draw_detail_view()
 			ImGui::EndCombo();
 		}
 
+		// 프로젝션외 다른 Val_CameraProperty 설정 21.11.15
 		if (ImGui::float_field(&width, "width"))
 			this->update_view_projection();
 		if (ImGui::float_field(&height, "height"))
@@ -172,6 +180,7 @@ void Camera::draw_detail_view()
 		if (ImGui::float_field(&far_z, "far_z"))
 			this->update_view_projection();
 
+		// 2D와 3D에 따라 달라지는 Val_CameraProperty 설정 21.11.15
 		switch (this->projection_type)
 		{
 		case PROJECTION_TYPE::ORTHO:
@@ -184,6 +193,7 @@ void Camera::draw_detail_view()
 			break;
 		}
 
+		//// ray가 제대로 만들어 지는지 테스트를 위한 코드 21.11.15
 		//Line line;
 		//this->make_ray_by_screen_pos(line, 2, 2, 1, 1);
 		//ImGui::XMVECTOR_field(line.origin, "origin");
