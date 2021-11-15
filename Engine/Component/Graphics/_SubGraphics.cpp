@@ -15,8 +15,10 @@ SubGraphics::~SubGraphics() {}
 
 void SubGraphics::awake()
 {
-	Device = owner->this_scene->this_engine->Device.Get();
-	Device_context = owner->this_scene->this_engine->Device_context.Get();
+	auto ec = EngineContext::get_instance();
+
+	Device = ec->Device.Get();
+	Device_context = ec->Device_context.Get();
 }
 
 void SubGraphics::sleep()
@@ -26,8 +28,10 @@ void SubGraphics::sleep()
 void SubGraphics::only_draw()
 {
 	// SubGraphics에서 렌더링 파이프라인 설정 21.11.15
+	Render_target.get()->set_render_target(this);
+	Render_target.get()->ClearRenderTarget(this);
+	Camera_ptr.get()->set_camera(this);
 	Device_context->RSSetViewports(1, &viewport);
-	Camera_ptr->set_camera(this);
 
 	// 드로잉 씬 리스트에 따라 드로잉함. 21.11.15
 	for (auto it = Drawing_scenes.begin(); it != Drawing_scenes.end(); ++it)
@@ -37,6 +41,9 @@ void SubGraphics::only_draw()
 			it->get()->draw_all_renderer(this);
 		}
 	}
+
+	// 스왑체인의 경우 버퍼를 스왑함.
+	Render_target.get()->Present(this);
 }
 
 void SubGraphics::update_viewport_size(FLOAT topLeftX, FLOAT topLeftY, FLOAT width, FLOAT height, FLOAT minDepth, FLOAT maxDepth)
@@ -52,7 +59,7 @@ void SubGraphics::update_viewport_size(FLOAT topLeftX, FLOAT topLeftY, FLOAT wid
 
 void SubGraphics::update_viewport_size(UINT window_width, UINT window_height)
 {
-	// 조건 검사
+	// 유효하지 않은 값일 경우 종료하도록 설정
 	if (window_width < 1 && window_height < 1) return;
 
 	// update_viewport_size 전달

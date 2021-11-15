@@ -17,12 +17,8 @@ Graphics::Graphics(SafePtr<Camera> Camera_ptr, SafePtr<RenderTarget> Render_targ
 Graphics::~Graphics()
 {}
 
-//#include "../../Game/Pipeline/SpritePipe/SpritePipe.h"
 void Graphics::update()
 {
-	Render_target.get()->set_render_target(this);
-	Render_target.get()->ClearRenderTarget(this);
-	Camera_ptr.get()->set_camera(this);
 	// test code
 	{
 	//	// Graphics가 작동하는지 확인하기 위한 작업.
@@ -63,16 +59,16 @@ void Graphics::update()
 	//	pipe.draw(this);
 	}
 
-	only_draw();
-
+	// 이 서브그레픽을 드로잉 하기전 먼저 드로우할 서브그레픽 설정
+	// 만일 업데이트 되어 있는 경우
 	for (auto it = Sub_graphics.begin(); it != Sub_graphics.end(); ++it)
 	{
 		if (it->is_vaild())
 			it->get()->only_draw();
 	}
 
-	// 
-	Render_target.get()->Present(this);
+	// 드로우 함수 호출
+	only_draw();
 }
 
 void Graphics::draw_detail_view()

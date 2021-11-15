@@ -1,6 +1,7 @@
 #include "ImGuiGraphics.h"
 
 #include "../Display/Display.h"
+#include "../Camera/_Camera.h"
 #include "../RenderTarget/RenderToSwapChain.h"
 
 using namespace std;
@@ -13,17 +14,17 @@ ImGuiGraphics::ImGuiGraphics(SafePtr<Camera> Camera_ptr, SafePtr<RenderToSwapCha
 ImGuiGraphics::~ImGuiGraphics()
 {}
 
-type_index ImGuiGraphics::get_class_type() { return typeid(ImGuiGraphics); }
-
 void ImGuiGraphics::awake()
 {
 	SubGraphics::awake();
 
-	//Setup ImGui
+	//ImGui 컨텍스트 생성 21.11.15
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
+
+	// ImGui style setting 21.11.15
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
+	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
@@ -36,8 +37,6 @@ void ImGuiGraphics::awake()
 																//io.ConfigFlags |= ImGuiConfigFlags_DpiEnableScaleViewports; // FIXME-DPI: Experimental.
 	
 	ImGui::StyleColorsDark();
-	//ImGui::StyleColorsLight();
-	//ImGui::StyleColorsClassic();
 
 	// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
 	ImGuiStyle& style = ImGui::GetStyle();
@@ -109,6 +108,7 @@ void ImGuiGraphics::awake()
 		style->WindowRounding = 4.0f;
 	}
 
+	// ImGui Win32와 DX11 세팅 21.11.15
 	auto render_win = this->Render_target.cast<RenderToSwapChain>()->display->renderWindow.get();
 	HWND parent_window = render_win->GetHWND();
 	ImGui_ImplWin32_Init(parent_window);
@@ -116,67 +116,28 @@ void ImGuiGraphics::awake()
 		this->get_owner()->this_scene->this_engine->Device.Get(),
 		this->get_owner()->this_scene->this_engine->Device_context.Get()
 	);
-
-
-	//// 그리기 위해 필요한 최소량.
-	//vertex.emplace_back(-0.5, 0.5f, 0.5f, 0.0f, 0.0f);
-	//vertex.emplace_back(0.5f, 0.5f, 0.5f, 0.0f, 0.0f);
-	//vertex.emplace_back(0.5f, -0.5f, -0.5f, 0.0f, 0.0f);
-	//vertex.emplace_back(-0.5f, -0.5f, -0.5f, 0.0f, 0.0f);
-	//SV_vertex.initialize(this->Device, vertex);
-
-	//index.emplace_back(0);
-	//index.emplace_back(1);
-	//index.emplace_back(2);
-	//index.emplace_back(3);
-	//index.emplace_back(2);
-	//index.emplace_back(1);
-	//IB_default.initialize(this->Device, index);
-
-	//vector<D3D11_INPUT_ELEMENT_DESC> input_ele;
-	//BTYPE::VB_SV_vertex::T_get_input_layout(input_ele);
-	//VS_shader.initialize(this->Device, L"DefaultSV_vs_shader", input_ele);
-	//this->Device->CreateInputLayout(input_ele.data(), input_ele.size(), this->VS_shader.GetBuffer()->GetBufferPointer(), this->VS_shader.GetBuffer()->GetBufferSize(), input_layout.GetAddressOf());
-
-	//PS_shader.initialize(this->Device, L"DefaultSV_ps_shader");
-
-	//CD3D11_RASTERIZER_DESC rzDesc(D3D11_DEFAULT);
-	//rzDesc.CullMode = D3D11_CULL_NONE;
-	//this->Device->CreateRasterizerState(&rzDesc, rsstate.GetAddressOf());
-
-	////Create Blend State
-	//D3D11_BLEND_DESC blendDesc{};
-	//D3D11_RENDER_TARGET_BLEND_DESC rtbd{};
-	//rtbd.BlendEnable = true;
-	//rtbd.SrcBlend = D3D11_BLEND::D3D11_BLEND_SRC_ALPHA;
-	//rtbd.DestBlend = D3D11_BLEND::D3D11_BLEND_INV_SRC_ALPHA;
-	//rtbd.BlendOp = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
-	//rtbd.SrcBlendAlpha = D3D11_BLEND::D3D11_BLEND_ONE;
-	//rtbd.DestBlendAlpha = D3D11_BLEND::D3D11_BLEND_ZERO;
-	//rtbd.BlendOpAlpha = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
-	//rtbd.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE::D3D11_COLOR_WRITE_ENABLE_ALL;
-	//blendDesc.RenderTarget[0] = rtbd;
-	//this->Device->CreateBlendState(&blendDesc, blendState.GetAddressOf());
-
-	//CD3D11_DEPTH_STENCIL_DESC dsDesc(D3D11_DEFAULT);
-	////dsDesc.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS_EQUAL;
-	//this->Device->CreateDepthStencilState(&dsDesc, dsState.GetAddressOf());
 }
 
 void ImGuiGraphics::sleep()
 {
-	// Cleanup
+	// ImGui Win32와 DX11 종료 21.11.15
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
+
+	// 컨텍스트 종료 21.11.15
 	ImGui::DestroyContext();
 }
 
 void ImGuiGraphics::update()
 {
-	// 렌더링 파이프라인을 움직이고.
+	//////
+	// SubGraphics에서 렌더링 파이프라인 설정 21.11.15
 	Render_target.get()->set_render_target(this);
 	Render_target.get()->ClearRenderTarget(this);
+	Camera_ptr.get()->set_camera(this);
+	Device_context->RSSetViewports(1, &viewport);
 
+	//////
 	// Window message를 먼저 픽해주고
 	MSG msg;
 	while (::PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
@@ -192,6 +153,17 @@ void ImGuiGraphics::update()
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
+	//////
+	// 드로잉 씬 리스트에 따라 드로잉함. 21.11.15
+	for (auto it = Drawing_scenes.begin(); it != Drawing_scenes.end(); ++it)
+	{
+		if (it->is_vaild())
+		{
+			it->get()->draw_all_renderer(this);
+		}
+	}
+
+	//////
 	// ImGui 드로우 데이터를 만든다.
 	for (auto& ImGui_draw : this->ImGui_draw_list)
 	{
@@ -211,46 +183,7 @@ void ImGuiGraphics::update()
 		ImGui::RenderPlatformWindowsDefault();
 	}
 
-	//{
-		//////// 테스트 하는 공간.
-		//MESH::HaveSV SV_have;
-		//SV_have.Vertex_vector.emplace_back(-1.0f, 1.0f, 0.0f, 0.0f, 0.0f);
-		//SV_have.Vertex_vector.emplace_back(1.0f, 1.0f, 0.0f, 0.0f, 0.0f);
-		//SV_have.Vertex_vector.emplace_back(1.0f, -1.0f, 0.0f, 0.0f, 0.0f);
-		//SV_have.Vertex_vector.emplace_back(-1.0f, -1.0f, 0.0f, 0.0f, 0.0f);
-		//SV_have.Index_vector.emplace_back(0);
-		//SV_have.Index_vector.emplace_back(1);
-		//SV_have.Index_vector.emplace_back(2);
-		//SV_have.Index_vector.emplace_back(3);
-		//SV_have.Index_vector.emplace_back(2);
-		//SV_have.Index_vector.emplace_back(1);
-		//SHADER::SVShader SV_shader(L"DefaultSV_vs_shader", L"DefaultSV_ps_shader");
-		//SV_shader.rasterizer_desc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
-		//SV_have.load_resource(this->owner->this_scene->this_engine.get());
-		//SV_shader.load_resource(this->owner->this_scene->this_engine.get());
-		//UINT Offset = 0;
-		//SV_have.set_mesh(this->Device_context, Offset);
-		//SV_shader.set_shader(this->Device_context);
-		//SV_have.draw(this->Device_context);
-	//  //
-	//  //
-	//	// 그리기 위해서 필요한 최소한. 렌더타겟이 설정되어 있다는 전제하에.
-	//	//UINT offset = 0;
-	//	//
-	//	//this->Device_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	//	//this->Device_context->RSSetState(rsstate.Get());
-	//	//this->Device_context->OMSetBlendState(blendState.Get(), nullptr, 0xffffffff);
-	//	//this->Device_context->OMSetDepthStencilState(dsState.Get(), 0);
-	//	//this->Device_context->IASetInputLayout(input_layout.Get());
-	//	//this->Device_context->VSSetShader(VS_shader.GetShader(), 0, 0);
-	//	//this->Device_context->PSSetShader(PS_shader.GetShader(), 0, 0);
-	//	//this->Device_context->IASetVertexBuffers(0, 1, SV_vertex.GetAddressOf(), SV_vertex.StridePtr(), &offset);
-	//	//this->Device_context->IASetIndexBuffer(IB_default.Get(), DXGI_FORMAT_R32_UINT, 0);
-	//	////this->Device_context->DrawAuto();
-	//	//this->Device_context->DrawIndexed(index.size(), 0, 0);
-	//}
-	//only_draw();
-
-	// 
+	//////
+	//
 	Render_target.get()->Present(this);
 }

@@ -721,7 +721,4 @@
   <ItemGroup>
     <Text Include="Engine\ImGui\LICENSE.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
-  </ItemGroup>
 </Project>
