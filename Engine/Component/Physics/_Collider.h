@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../_Include.h"
-#include "_Raycast.h"
 
 struct Line
 {
@@ -33,8 +32,6 @@ public:
 	virtual ~Collider() {}
 	virtual void get_hit_result(Line& line, Hit& hit) override;
 
-	// Component을(를) 통해 상속됨
-	virtual std::type_index get_class_type() override;
 	virtual void draw_detail_view() override;
 
 	// Collider

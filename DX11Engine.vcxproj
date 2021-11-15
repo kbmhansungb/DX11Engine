@@ -184,7 +184,6 @@
     <ClCompile Include="Engine\Component\RenderTarget\RenderToSwapChain.cpp" />
     <ClCompile Include="Engine\Component\Display\Display.cpp" />
     <ClCompile Include="Engine\Component\Graphics\_SubGraphics.cpp" />
-    <ClCompile Include="Engine\Component\Physics\_Raycast.cpp" />
     <ClCompile Include="Engine\Component\RenderTarget\RenderToTexture.cpp" />
     <ClCompile Include="Engine\Component\Unsorted\SimpleCharacterMovement.cpp" />
     <ClCompile Include="Engine\Component\Unsorted\SimpleMoveTransform.cpp" />
@@ -313,7 +312,6 @@
     <ClInclude Include="Engine\Component\Graphics\_SubGraphics.h" />
     <ClInclude Include="Engine\Base\Base.h" />
     <ClInclude Include="Engine\Component\Unsorted\SimpleMoveTransform.h" />
-    <ClInclude Include="Engine\Component\Physics\_Raycast.h" />
     <ClInclude Include="Engine\Game\Component.h" />
     <ClInclude Include="Engine\Component\Camera\_Camera.h" />
     <ClInclude Include="Engine\Game\GameObject.h" />

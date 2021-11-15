@@ -141,9 +141,6 @@
     <ClCompile Include="Engine\Game\Resource\Texture\_Texture.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Component\Physics\_Raycast.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Tool\ToolMain_ImGui.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -462,9 +459,6 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Game\Scene.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Component\Physics\_Raycast.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Engine\ImGui\imconfig.h">

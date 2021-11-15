@@ -6,11 +6,6 @@ void Collider::get_hit_result(Line& line, Hit& hit)
 	line_sphere_interaction(line, hit, this->owner->pos, radius);
 }
 
-std::type_index Collider::get_class_type()
-{
-	return typeid(Collider);
-}
-
 void Collider::draw_detail_view()
 {
 	Component::draw_detail_view();
