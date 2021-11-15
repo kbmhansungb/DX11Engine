@@ -83,11 +83,11 @@ void Display::window_close_message()
 
 void Display::resize_window(UINT new_width, UINT new_height)
 {
-    // 디스플레이의 크기 변경
+    // 디스플레이의 크기 변경 21.11.15
     windowWidth = new_width;
     windowHeight = new_height;
 
-    // 디스플레이 크기 변경 델리게이트 전파
+    // 디스플레이 크기 변경 델리게이트 전파 21.11.15
     delegate_resize_window.Invoke(new_width, new_height);
 }
 
@@ -95,9 +95,10 @@ void Display::draw_detail_view()
 {
     Component::draw_detail_view();
 
-    string name = "Display##" + StringHelper::ptr_to_string(this);
-    if (ImGui::CollapsingHeader(name.c_str()))
+    if (ImGui::CollapsingHeader("Display"))
     {
+        // Val_Display 값 변경 21.11.15
+
         ImGui::base_field(parentDisplay, "Parent display");
         
         ImGui::wstring_field(wTitle, "Title", 100);

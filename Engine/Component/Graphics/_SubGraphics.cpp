@@ -13,16 +13,6 @@ SubGraphics::SubGraphics(SafePtr<Camera> Camera_ptr, SafePtr<RenderTarget> Rende
 
 SubGraphics::~SubGraphics() {}
 
-type_index SubGraphics::get_class_type()
-{
-	return typeid(SubGraphics);
-}
-
-//bool SubGraphics::awake_condition()
-//{
-//	return Camera_ptr.is_vaild() && Render_target.is_vaild();
-//}
-
 void SubGraphics::awake()
 {
 	Device = owner->this_scene->this_engine->Device.Get();
