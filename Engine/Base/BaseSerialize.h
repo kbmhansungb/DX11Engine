@@ -2,6 +2,8 @@
 
 #include "Base.h"
 
+// Base 직렬화 참고.
+
 //namespace BinarySave
 //{
 //	static void response(BinarySavePayload* payload, std::vector<int>& val)					{ payload->write_array(val->val); }
