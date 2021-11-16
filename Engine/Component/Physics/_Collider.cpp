@@ -12,71 +12,16 @@ void Collider::draw_detail_view()
 
 	if (ImGui::CollapsingHeader("Collider"))
 	{
+		// Val_Collider 프로퍼티
 		std::string name = "radius##" + StringHelper::ptr_to_string(&radius);
 		ImGui::InputFloat(name.c_str(), &radius);
-
-		// 테스트
-		//ImGui::NewLine();
-		
-		//// 마우스 포지션
-		//auto mpos = ImGui::GetIO().MousePos;
-		//std::string mpostext = "Mouse pos : " + std::to_string(mpos.x) + " " + std::to_string(mpos.y);
-		//ImGui::Text(mpostext.c_str());
-
-		//// 마우스 포지션 to 스크린 포지션
-		//auto vpos = ImGui::GetCurrentWindow()->Pos;
-		//std::string vpostext = "Viewport pos : " + std::to_string(vpos.x) + " " + std::to_string(vpos.y);
-		//ImGui::Text(vpostext.c_str());
-
-		//auto tbh = ImGui::GetCurrentWindow()->TitleBarHeight();
-		//std::string tbhtext = "Titlebar height : " + std::to_string(tbh);
-		//ImGui::Text(tbhtext.c_str());
-
-		//auto rmpos = ImVec2(mpos.x - vpos.x, mpos.x - vpos.x - tbh);
-		//std::string rmpostext = "Relative mouse pos : " + std::to_string(rmpos.x) + " " + std::to_string(rmpos.y);
-		//ImGui::Text(rmpostext.c_str());
-
-
-		// 트라이엥글 인터렉션 테스트.
-		static Line line{};
-		static Hit hit{};
-		static XMVECTOR p1{};
-		static XMVECTOR p2{};
-		static XMVECTOR p3{};
-
-		Collider::line_triangle_interaction(line, hit, p1, p2, p3, true);
-		ImGui::NewLine();
-		if (ImGui::Button("Straight"))
-		{
-			line.type = Line::TYPE::STRAIGHT;
-		}
-		if (ImGui::Button("Ray"))
-		{
-			line.type = Line::TYPE::RAY;
-		}
-		if (ImGui::Button("Line"))
-		{
-			line.type = Line::TYPE::LINE;
-		}
-		ImGui::XMVECTOR_field(line.origin, "line origion");
-		ImGui::XMVECTOR_field(line.vec, "line vec");
-		ImGui::NewLine();
-		ImGui::XMVECTOR_field(p1, "p1");
-		ImGui::XMVECTOR_field(p2, "p2");
-		ImGui::XMVECTOR_field(p3, "p3");
-		ImGui::NewLine();
-		ImGui::XMVECTOR_field(hit.position, "hit position");
-		ImGui::InputFloat("hit distance", &hit.distance);
-		ImGui::Text(std::to_string(hit.is_hit).c_str());
 	}
 }
 
-
-// Collider
-// ?????...
-
 bool Collider::solveQuadratic(const float& a, const float& b, const float& c, float& x0, float& x1)
 {
+	// 충돌을 검사하는 수학적인 방법..
+
 	float discr = b * b - 4.0f * a * c;
 	if (discr < 0) return false;
 	else if (discr == 0) x0 = x1 = -0.5f * b / a;
@@ -179,26 +124,7 @@ void Collider::line_triangle_interaction(
 	
 	// hit point
 	XMVECTOR plane = XMPlaneFromPoints(p1, p2, p3);
-	// 상관없음.
 	hit.position = XMPlaneIntersectLine(plane, line.origin, line.origin + line.vec);
-	//switch (line.type)
-	//{
-	//case Line::TYPE::LINE:
-	//{
-	//	hit.position = XMPlaneIntersectLine(plane, line.origin, line.origin + line.vec);
-	//}
-	//	break;
-	//case Line::TYPE::RAY:
-	//{
-	//	hit.position = XMPlaneIntersectLine(plane, line.origin, line.origin + line.vec * 10000.0f);
-	//}
-	//	break;
-	//case Line::TYPE::STRAIGHT:
-	//{
-	//	hit.position = XMPlaneIntersectLine(plane, line.origin - line.vec * 10000.0f, line.origin + line.vec * 10000.0f);
-	//}
-	//	break;
-	//}
 	hit.distance = XMVector3Length(hit.position - line.origin).m128_f32[0];
 
 	// in plane
