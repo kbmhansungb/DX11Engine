@@ -15,6 +15,9 @@ namespace BTYPE {
 	};
 }
 
+/*
+* 라이트 포스트 프로세스
+*/
 class LightProcess : public DeferredProcess
 {
 public:

@@ -112,11 +112,6 @@ void InstancePipe::draw_instance_detail_view()
 	update();
 }
 
-std::type_index InstanceMeshRenderer::get_class_type()
-{
-	return typeid(InstanceMeshRenderer);
-}
-
 void InstanceMeshRenderer::draw(SubGraphics* sub_graphics)
 {
 	this->instance_pipe.draw(sub_graphics, owner->world);

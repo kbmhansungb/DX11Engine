@@ -178,11 +178,6 @@ void MeshPipe::mesh_pipe_draw_detail()
 // MeshRenderer
 //////
 
-std::type_index MeshRenderer::get_class_type()
-{
-	return typeid(MeshRenderer);
-}
-
 void MeshRenderer::draw(SubGraphics* sub_graphics)
 {
 	mesh_pipe.draw(sub_graphics, owner->world);

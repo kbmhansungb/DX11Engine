@@ -18,6 +18,13 @@ namespace BTYPE {
 	};
 }
 
+#pragma message (__FILE__ "(" _CRT_STRINGIZE(__LINE__) ")" ": warning: 최적화 문제")
+// 셈플 카운트를 조금만 높여도 심각한 렉이 유발된다.
+// 21.11.16
+
+/*
+* 블러 포스트 프로세스
+*/
 class Blur : public DeferredProcess
 {
 public:

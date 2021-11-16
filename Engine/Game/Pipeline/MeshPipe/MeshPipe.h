@@ -60,18 +60,28 @@ public:
 	void mesh_pipe_draw_detail();
 };
 
+/// <summary>
+/// ViaRenderer를 상속받아 렌더함.
+/// 21.11.16
+/// </summary>
 class MeshRenderer : public ViaRenderer
 {
+#pragma region ConDestruct
+
 public:
-	virtual ~MeshRenderer() {};
-	// Component을(를) 통해 상속됨
-	virtual std::type_index get_class_type() override;
+	~MeshRenderer() {};
+
+#pragma endregion
 
 	MeshPipe mesh_pipe;
+
+#pragma region ViaRenderer
 
 	virtual void draw(SubGraphics* sub_graphics) override;
 	virtual void draw_mesh_only(SubGraphics* sub_graphics) override;
 	virtual void draw_detail_view() override;
+
+#pragma endregion
 };
 REGIST_COMPONENT(MeshRenderer);
 
@@ -90,6 +100,9 @@ class Camera;
 class Graphics;
 namespace EDITOR
 {
+
+#pragma region Editor_add_mesh
+
 	struct Editor_add_mesh
 	{
 		SafePtr<GameObject> mesh_object;
@@ -98,6 +111,11 @@ namespace EDITOR
 	};
 	typedef Editor_add_mesh EAM;
 	extern void editor_add_mesh(SafePtr<GameObject> parent, SafePtr<MESH::MeshMesh> mesh_mesh);
+
+#pragma endregion
+
+#pragma region Free_view_mesh_mesh_renderer
+
 	struct Free_view_mesh_mesh_renderer
 	{
 		SafePtr<EditorDetailComponent>		editor_detail_component;
@@ -106,4 +124,7 @@ namespace EDITOR
 	};
 	typedef Free_view_mesh_mesh_renderer FVMMR;
 	extern void free_view_mesh_mesh_renderer(SafePtr<MESH::MeshMesh> mesh_mesh);
+
+#pragma endregion
+
 }

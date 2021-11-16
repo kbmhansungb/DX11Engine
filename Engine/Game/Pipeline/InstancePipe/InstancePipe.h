@@ -10,7 +10,6 @@ public:
 	SafePtr<SHADER::MeshShader>	shader;
 	SafePtr<MESH::MeshMesh>	mesh;
 	
-	//ConstantBuffer<BTYPE::CB_InstanceSetting>	setting;
 	/// <summary>
 	/// Instance world buffer is in here.
 	/// </summary>
@@ -31,16 +30,36 @@ public:
 	void draw_instance_detail_view();
 };
 
+/// <summary>
+/// 인스턴스 메쉬 렌더
+/// 메쉬를 바탕으로 인스턴스 렌더함.
+/// 21.11.16
+/// </summary>
 class InstanceMeshRenderer : public ViaRenderer
 {
+
+#pragma region Val
+
 public:
 	InstancePipe instance_pipe;
 
-	// ViaRenderer을(를) 통해 상속됨
-	virtual std::type_index get_class_type() override;
+#pragma endregion
+
+#pragma region ViaRenderer
+
+public:
 	virtual void draw(SubGraphics* sub_graphics) override;
 	virtual void draw_mesh_only(SubGraphics* sub_graphics) override;
 	virtual void draw_detail_view() override;
+
+#pragma endregion
+
+#pragma region Component
+
+public:
 	virtual void awake() override;
+
+#pragma endregion
+
 };
 REGIST_COMPONENT(InstanceMeshRenderer);
