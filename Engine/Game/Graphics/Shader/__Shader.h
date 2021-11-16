@@ -2,10 +2,17 @@
 
 #include "../../_Include.h"
 #include <string.h>
-//using namespace std;
-#pragma comment(lib,"D3DCompiler.lib") // 이걸 지우고 왜 안되는지 찾고 있었네..
+
+// 쉐이더를 컴파일 하기위해서 필요함.
+// 21.11.16
+#pragma comment(lib,"D3DCompiler.lib")
 #include <d3dcompiler.h>
 
+/*
+* 버텍스 쉐이더와 픽셀 쉐이더로 나누어짐.
+* 메서드로 GetShaderPath를 가지고 있음.
+* 21.11.16
+*/
 namespace SHADER
 {
 	std::wstring GetShaderPath(std::wstring shader_name);

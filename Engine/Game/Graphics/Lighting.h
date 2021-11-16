@@ -2,9 +2,16 @@
 
 #include "../_Include.h"
 
+// 씬을 단위로 라이팅 함.
+// 21.11.16
+
 class SubGraphics;
 class Lighting;
 
+/// <summary>
+/// 씬에 상속되어 사용됨
+/// 21.11.16
+/// </summary>
 class LightingContainer
 {
 protected:
@@ -15,6 +22,10 @@ public:
 	friend Lighting;
 };
 
+/// <summary>
+/// 라이팅 컴포넌트에 상속되어 사용됨.
+/// 21.11.16
+/// </summary>
 class Lighting
 {
 public:

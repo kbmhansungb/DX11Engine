@@ -2,10 +2,17 @@
 
 #include "../_Include.h"
 
+// 씬을 단위로 렌더함
+// 21.11.16
+
 class SubGraphics;
 class RenderScope;
 class RendererContainer;
 
+/// <summary>
+/// 씬에 상속되어 사용됨
+/// 21.11.16
+/// </summary>
 class RendererContainer
 {
 protected:
@@ -17,6 +24,10 @@ public:
 	const std::map<int, std::unordered_set<RenderScope*>>& get_rednerer_sorted() { return renderer_sorted; }
 };
 
+/// <summary>
+/// ViaRenderer에 상속되어 사용됨
+/// 21.11.16
+/// </summary>
 class RenderScope
 {
 public:

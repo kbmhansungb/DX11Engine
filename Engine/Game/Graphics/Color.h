@@ -1,6 +1,10 @@
 #pragma once
 typedef unsigned char BYTE;
 
+/// <summary>
+/// 칼라 클래스, BTYPE rgba, unsigned int color, float dds가 union으로 통합되어 있음.
+/// 21.11.16
+/// </summary>
 class Color
 {
 public:
