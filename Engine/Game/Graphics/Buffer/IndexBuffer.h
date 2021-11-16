@@ -2,6 +2,10 @@
 
 #include "_Buffer.h"
 
+/// <summary>
+/// 인덱스 버퍼
+/// </summary>
+/// <typeparam name="Index">BTYPE</typeparam>
 template <typename Index>
 class IndexBuffer
 {

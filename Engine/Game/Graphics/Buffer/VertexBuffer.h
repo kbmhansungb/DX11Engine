@@ -2,6 +2,11 @@
 
 #include "_Buffer.h"
 
+/// <summary>
+/// 버텍스 버퍼
+/// 21.11.16
+/// </summary>
+/// <typeparam name="Type">BTYPE</typeparam>
 template <typename Type>
 class VertexBuffer
 {

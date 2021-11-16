@@ -288,6 +288,9 @@
     <ClCompile Include="Engine\Game\Pipeline\DefferredPipeline\Blur.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Component\RenderTarget\_RenderTarget.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Window\StringHelper.h">
@@ -660,9 +663,6 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Game\Pipeline\_Exclude.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Component\RenderTarget\RenderToDeferred.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Game\Pipeline\SubstancePipe\SubstancePipe_Animator.h">

@@ -45,3 +45,20 @@ void BTYPE::Substance::T_get_input_layout(vector<D3D11_INPUT_ELEMENT_DESC>&Input
 		D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	);
 }
+
+DXGI_FORMAT BTYPE::IB_Default::T_get_index_buffer_type()
+{
+	return DXGI_FORMAT::DXGI_FORMAT_R32_UINT;
+}
+
+int BTYPE::IB_Default::T_get_index() const { return Index; }
+
+void BTYPE::CB_World_only::put_world(const XMMATRIX& new_world) { _world = new_world; }
+
+const XMMATRIX& BTYPE::CB_World_only::get_world() { return _world; }
+
+void BTYPE::CB_ViewProjection::put_viewprojection(XMMATRIX new_world) { _viewprojection = new_world, _viewprojection_inverse = XMMatrixInverse(nullptr, new_world); }
+
+XMMATRIX BTYPE::CB_ViewProjection::get_viewprojection() { return _viewprojection; }
+
+XMMATRIX BTYPE::CB_ViewProjection::get_viewprojection_inverse() { return _viewprojection_inverse; }

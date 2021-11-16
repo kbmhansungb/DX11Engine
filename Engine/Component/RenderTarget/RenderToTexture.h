@@ -3,8 +3,15 @@
 #include "_RenderTarget.h"
 #include "../../Game/Pipeline/SpritePipe/SpritePipe.h"
 
-// 자체적으로 텍스쳐럴 가짐. 외부에 있을 경우 하나의 텍스쳐에 렌더텍스쳐가 연결될 수 있음.
-// 요령것 개발자가 연결하지 않을 수 있으나. 사람은 실수 하기 마련.
+
+#pragma message (__FILE__ "(" _CRT_STRINGIZE(__LINE__) ")" ": warning: 리팩토링 해야함")
+// unique_ptr로 관리되는 텍스쳐 들을 어떻게 직관적으로 할 수 있을까?
+
+/// <summary>
+/// 자체적으로 텍스쳐럴 가짐. 외부에 있을 경우 하나의 텍스쳐에 렌더텍스쳐가 연결될 수 있음.
+/// 요령것 개발자가 연결하지 않을 수 있으나. 사람은 실수 하기 마련.
+/// 21.11.16
+/// </summary>
 class RenderToTexture : public RenderTarget
 {
 public:
@@ -37,7 +44,6 @@ public:
 	XMFLOAT4 Clear_color{0.0f, 0.0f, 0.0f, 1.0f};
 	
 	RenderToTexture(UINT resource_width, UINT resource_height);
-	virtual std::type_index get_class_type() override { return typeid(RenderToTexture); }
 	
 	virtual void awake() override;
 

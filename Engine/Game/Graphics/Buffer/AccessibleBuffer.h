@@ -2,6 +2,12 @@
 
 #include "_Buffer.h"
 
+#pragma message (__FILE__ "(" _CRT_STRINGIZE(__LINE__) ")" ": warning: 현재로써는 사용되지 않음")
+/// <summary>
+/// 현재로서는 사용되지 않음.
+/// 21.11.16
+/// </summary>
+/// <typeparam name="Type"></typeparam>
 template<typename Type>
 class AccessibleBuffer
 {

@@ -110,10 +110,3 @@ void SimpleMoveTransform::draw_detail_view()
 	}
 }
 
-// Component을(를) 통해 상속됨
-
-type_index SimpleMoveTransform::get_class_type()
-{
-	return typeid(SimpleMoveTransform);
-}
-

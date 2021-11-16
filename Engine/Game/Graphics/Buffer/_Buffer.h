@@ -2,7 +2,22 @@
 
 #include "../../_Include.h"
 
-// Vertex buffer
+/*
+* 버텍스 버퍼, 픽셀 버퍼, 인덱스 버퍼, 콘스탄트 버퍼 등을 정의하고 모아둠.
+* 템플릿 메서드를 사용함. 설명은 Buffer에 있음.
+*/
+namespace BTYPE {}
+
+/*
+* 버텍스 버퍼 모음
+* 
+* static void T_get_input_layout(std::vector<D3D11_INPUT_ELEMENT_DESC>&)
+* 스테틱 메서드로 이 버텍스 버퍼의 인풋 레이아웃을 반환하도록 작성해야 함.
+* XMVECTOR T_get_position_vector() const;
+* 인스턴스의 포지션을 반환하는 메서드
+* 
+* 21.11.16
+*/
 namespace BTYPE
 {
 	struct Vertex_default
@@ -28,24 +43,40 @@ namespace BTYPE
 		static void T_get_input_layout(std::vector<D3D11_INPUT_ELEMENT_DESC>& Input_element_desc);
 	};
 }
-// Index buffer
+
+/*
+* 인덱스 버퍼 모음
+* 
+* static DXGI_FORMAT T_get_index_buffer_type();
+* 인덱스 포멧 반환
+* int T_get_index() const { return Index; }
+* int형 인덱스로 반환
+* 21.11.16
+*/
 namespace BTYPE
 {
+#pragma message (__FILE__ "(" _CRT_STRINGIZE(__LINE__) ")" ": warning: unsigned long으로 index를 설정해도 int형으로 반환하면 의미가 없지 않나?")
 	struct IB_Default
 	{
 		unsigned long Index;
 		IB_Default() : Index() {}
 		IB_Default(unsigned long Index) : Index(Index) {}
 
-		static DXGI_FORMAT T_get_index_buffer_type()
-		{
-			return DXGI_FORMAT::DXGI_FORMAT_R32_UINT;
-		}
-		int T_get_index() const { return Index; }
+		static DXGI_FORMAT T_get_index_buffer_type();
+		int T_get_index() const;
 	};
 }
 
-// Constant buffer
+/*
+* 콘스탄트 버퍼 모음
+* 
+* static UINT T_get_constant_buffer_slot();
+* 입력할 콘스탄트 버퍼의 슬랏 설정. 13까지 가능한 것으로 알고 있음.
+* static bool T_use_in_vs();
+* vs에서 이 콘스탄트 버퍼를 사용할 것인가?
+* static bool T_use_in_ps();
+* ps에서 이 콘스탄트 버퍼를 사용할 것인가?
+*/
 namespace BTYPE
 {
 	struct CB_World_only
@@ -56,8 +87,8 @@ namespace BTYPE
 		CB_World_only() : _world(DirectX::XMMatrixIdentity()) {}
 		CB_World_only(DirectX::XMMATRIX& world) : _world(world) {}
 
-		void put_world(const XMMATRIX& new_world) { _world = new_world; }
-		const XMMATRIX& get_world() { return _world; }
+		void put_world(const XMMATRIX& new_world);
+		const XMMATRIX& get_world();
 		__declspec(property(get = get_world, put = put_world)) XMMATRIX world;
 
 		static UINT T_get_constant_buffer_slot() { return 0; }
@@ -84,6 +115,7 @@ namespace BTYPE
 		static bool T_use_in_vs() { return true; }
 		static bool T_use_in_ps() { return true; }
 	};
+
 	struct CB_ViewProjection
 	{
 	private:
@@ -93,9 +125,9 @@ namespace BTYPE
 		CB_ViewProjection() : _viewprojection(DirectX::XMMatrixIdentity()), _viewprojection_inverse(DirectX::XMMatrixIdentity()) {}
 		CB_ViewProjection(DirectX::XMMATRIX& viewprojection) : _viewprojection(viewprojection), _viewprojection_inverse(DirectX::XMMatrixInverse(nullptr, viewprojection)) {}
 
-		void put_viewprojection(XMMATRIX new_world) { _viewprojection = new_world, _viewprojection_inverse = XMMatrixInverse(nullptr, new_world); }
-		XMMATRIX get_viewprojection() { return _viewprojection; }
-		XMMATRIX get_viewprojection_inverse() { return _viewprojection_inverse; }
+		void put_viewprojection(XMMATRIX new_world);
+		XMMATRIX get_viewprojection();
+		XMMATRIX get_viewprojection_inverse();
 		__declspec(property(get = get_viewprojection, put = put_viewprojection)) XMMATRIX Viewprojection;
 		__declspec(property(get = get_viewprojection_inverse)) XMMATRIX Viewprojection_inverse;
 
@@ -103,6 +135,7 @@ namespace BTYPE
 		static bool T_use_in_vs() { return true; }
 		static bool T_use_in_ps() { return true; }
 	};
+
 	struct CB_DirectLight
 	{
 		DirectX::XMFLOAT3 Ambient_color;

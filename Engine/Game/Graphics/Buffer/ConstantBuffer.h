@@ -2,6 +2,11 @@
 
 #include "_Buffer.h"
 
+/// <summary>
+/// 콘스탄트 버퍼
+/// 21.11.16
+/// </summary>
+/// <typeparam name="Type">BTYPE</typeparam>
 template<class Type>
 class ConstantBuffer
 {
@@ -117,6 +122,12 @@ public:
 	}
 };
 
+/// <summary>
+/// 콘스탄트 어레이 버퍼
+/// BTYPE의 배열을 버퍼로 사용함
+/// 21.11.16
+/// </summary>
+/// <typeparam name="Type">BTYPE</typeparam>
 template <typename Type>
 class ConstantArrayBuffer
 {

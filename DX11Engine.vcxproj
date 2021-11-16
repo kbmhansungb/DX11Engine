@@ -185,6 +185,7 @@
     <ClCompile Include="Engine\Component\Display\Display.cpp" />
     <ClCompile Include="Engine\Component\Graphics\_SubGraphics.cpp" />
     <ClCompile Include="Engine\Component\RenderTarget\RenderToTexture.cpp" />
+    <ClCompile Include="Engine\Component\RenderTarget\_RenderTarget.cpp" />
     <ClCompile Include="Engine\Component\Unsorted\SimpleCharacterMovement.cpp" />
     <ClCompile Include="Engine\Component\Unsorted\SimpleMoveTransform.cpp" />
     <ClCompile Include="Engine\Game\Component.cpp" />
@@ -259,7 +260,6 @@
     <ClInclude Include="Engine\Base\BaseSerialize.h" />
     <ClInclude Include="Engine\Component\Light\_Exclude.h" />
     <ClInclude Include="Engine\Component\Renderer\_Exclude.h" />
-    <ClInclude Include="Engine\Component\RenderTarget\RenderToDeferred.h" />
     <ClInclude Include="Engine\Component\Unsorted\SimpleCharacterMovement.h" />
     <ClInclude Include="Engine\Component\_Exclude.h" />
     <ClInclude Include="Engine\Component\Graphics\ImGuiGraphics.h" />
