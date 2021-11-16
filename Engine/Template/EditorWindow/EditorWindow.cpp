@@ -272,11 +272,6 @@ EDITOR::Create_editor_window::~Create_editor_window()
 	if (payload.is_open()) editor_setting.serialize(&payload), payload.close();
 }
 
-std::type_index EDITOR::Create_editor_window::get_class_type()
-{
-	return typeid(Create_editor_window);
-}
-
 void EDITOR::Create_editor_window::draw_detail_view()
 {
 	set_ImGui();

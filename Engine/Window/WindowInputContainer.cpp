@@ -332,6 +332,9 @@ LRESULT WindowInputContainer::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LP
 
 		return DefWindowProc(hwnd, uMsg, wParam, lParam);
 	}
+	case WM_CLOSE:
+		Delegate_window_close.Invoke();
+		return 0;
 	default:
 		return DefWindowProc(hwnd, uMsg, wParam, lParam);
 	}    

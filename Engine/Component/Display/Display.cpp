@@ -75,10 +75,16 @@ void Display::update()
 void Display::window_close_message()
 {
     // 메인 디스플레이인 경우 엔진의 루프문을 종료하고
-    // 윈도우를 제거함 21.11.15
+    // 아닐 경우 윈도우를 제거함 
+    // 21.11.16
     if (mainDisplay)
+    {
         owner->this_scene->this_engine->engine_activation = false;
-    this->active = false;
+    }
+    else
+    {
+        this->active = false;
+    }
 }
 
 void Display::resize_window(UINT new_width, UINT new_height)

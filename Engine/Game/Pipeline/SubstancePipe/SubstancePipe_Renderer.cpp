@@ -229,11 +229,6 @@ SubstanceRenderer::SubstanceRenderer(SafePtr<MESH::SubstanceMesh> substance_mesh
 	this->Substance_pipe.shader = substance_mesh->default_shader;
 }
 
-std::type_index SubstanceRenderer::get_class_type()
-{
-	return typeid(SubstanceRenderer);
-}
-
 //#include "../SpritePipe/SpritePipe.h"
 void SubstanceRenderer::draw(SubGraphics* sub_graphics)
 {

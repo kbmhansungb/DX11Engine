@@ -60,7 +60,6 @@ namespace MESH
 
 
 		virtual ~SpriteMesh();
-		virtual std::type_index get_class_type() override;
 
 		virtual void load_resource(Engine* engine) override;
 		virtual void release_resource(Engine* engine) override;

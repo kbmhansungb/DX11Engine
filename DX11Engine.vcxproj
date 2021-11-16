@@ -238,10 +238,6 @@
     <ClCompile Include="Engine\Template\MainScene\MainScene.cpp" />
     <ClCompile Include="Engine\Window\Tool\Coroutine.cpp" />
     <ClCompile Include="Engine\_Include.cpp" />
-    <ClCompile Include="Tool\ToolMain_ImGui.cpp" />
-    <ClCompile Include="Tool\_load_resource.cpp" />
-    <ClCompile Include="Tool\_map_tool_ImGui.cpp" />
-    <ClCompile Include="Tool\__static.cpp" />
     <ClCompile Include="Engine\Window\Tool\Name.cpp" />
     <ClCompile Include="Engine\Base\AdapterReader.cpp" />
     <ClCompile Include="Engine\Window\ErrorLogger.cpp" />

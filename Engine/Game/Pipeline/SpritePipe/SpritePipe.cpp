@@ -12,11 +12,6 @@ MESH::SpriteMesh::~SpriteMesh()
 {
 }
 
-type_index MESH::SpriteMesh::get_class_type()
-{
-	return typeid(Mesh);
-}
-
 void MESH::SpriteMesh::load_resource(Engine* engine)
 {
 	this->buffer_sprite_vertex.initialize(engine->Device.Get(), sprite_vertex.data(), sprite_vertex.size());

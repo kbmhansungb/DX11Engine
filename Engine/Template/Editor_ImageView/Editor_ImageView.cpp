@@ -9,11 +9,6 @@ Editor_ImageView::Editor_ImageView(vector<SafePtr<TEXTURE::Texture>> allow_textu
 }
 Editor_ImageView::~Editor_ImageView() {}
 
-type_index Editor_ImageView::get_class_type()
-{
-	return typeid(Editor_ImageView);
-}
-
 void Editor_ImageView::draw_detail_view()
 {
 	// ¡ÿ∫Ò

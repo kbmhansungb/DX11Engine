@@ -32,32 +32,13 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 static LRESULT CALLBACK HandleMsgRedirect(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     WindowInputContainer* const pWindow = reinterpret_cast<WindowInputContainer*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
-    if (ImGui_ImplWin32_WndProcHandler(hwnd, uMsg, wParam, lParam))
-    {
-        //pWindow->record(hwnd, uMsg, wParam, lParam);
-        return true;
-    }
-    //ImGui_ImplWin32_WndProcHandler(hwnd, uMsg, wParam, lParam);
+    ImGui_ImplWin32_WndProcHandler(hwnd, uMsg, wParam, lParam);
     switch (uMsg)
     {
-    case WM_CLOSE:
-        pWindow->Delegate_window_close.Invoke();
-        //DestroyWindow(hwnd);
-        return 0;
     default:
         return pWindow->WindowProc(hwnd, uMsg, wParam, lParam);
     }
 }
-
-//static LRESULT CALLBACK ViewportProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-//{
-//    if (ImGui_ImplWin32_WndProcHandler(hwnd, uMsg, wParam, lParam))
-//    {
-//        return 0;
-//    }
-//    return DefWindowProc(hwnd, uMsg, wParam, lParam);
-//}
-
 static LRESULT CALLBACK HandleMessageSetup(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch (uMsg)

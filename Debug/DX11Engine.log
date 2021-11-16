@@ -1,3 +1,8 @@
-﻿  SimpleCharacterMovement.cpp
-D:\VisualStudio\DX11Engine_update_multiWindow\DX11Engine\Engine\Component\Unsorted\SimpleCharacterMovement.cpp(23): warning : 그냥 만들자..
+﻿  Display.cpp
+D:\VisualStudio\DX11Engine_update_multiWindow\DX11Engine\Engine\Window\WindowInputContainer.h(40,5): warning C4065: switch문에 'default'가 있으나 'case' 레이블이 없습니다.
+D:\VisualStudio\DX11Engine_update_multiWindow\DX11Engine\Engine\Base\Base.h(12): warning : 소멸자가 virtual 함수인 클래스는 자식 클래스의 다형성을 보장하는가?
+D:\VisualStudio\DX11Engine_update_multiWindow\DX11Engine\Engine\Base\Base.h(17): warning : 개선 필요
+D:\VisualStudio\DX11Engine_update_multiWindow\DX11Engine\Engine\Game\Graphics\Buffer\_Buffer.h(58): warning : unsigned long으로 index를 설정해도 int형으로 반환하면 의미가 없지 않나?
+D:\VisualStudio\DX11Engine_update_multiWindow\DX11Engine\Engine\Game\Graphics\Buffer\StreamBuffer.h(5): warning : 현재로서는 사용하지 않음
+D:\VisualStudio\DX11Engine_update_multiWindow\DX11Engine\Engine\Game\Graphics\Buffer\AccessibleBuffer.h(5): warning : 현재로써는 사용되지 않음
   DX11Engine.vcxproj -> D:\VisualStudio\DX11Engine_update_multiWindow\Debug\DX11Engine.exe

@@ -2,8 +2,10 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <list>
-//using namespace std;
 
+/*
+* 델리게이트의 안정성을 높이는 방법이 없나,,
+*/
 namespace Delegate
 {
 	template<typename... Arg>

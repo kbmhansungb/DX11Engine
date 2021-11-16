@@ -59,7 +59,6 @@ namespace EDITOR
 		Create_editor_window();
 		virtual ~Create_editor_window();
 		// Base을(를) 통해 상속됨
-		virtual std::type_index get_class_type() override;
 		virtual void draw_detail_view() override;
 
 	private:

@@ -57,7 +57,6 @@ public:
 	SubstancePipe Substance_pipe;
 	SubstanceRenderer();
 	SubstanceRenderer(SafePtr<MESH::SubstanceMesh> substance_mesh);
-	virtual std::type_index get_class_type() override;
 
 	virtual void draw(SubGraphics* sub_graphics) override;
 	virtual void draw_mesh_only(SubGraphics* sub_graphics) override;

@@ -8,8 +8,7 @@ namespace MESH
 	class Mesh : public Resource
 	{
 	public:
-		virtual ~Mesh() {}
-		virtual std::type_index get_class_type() override { return typeid(Mesh); }
+		~Mesh() {}
 
 		virtual void load_resource(Engine* engine) override = 0;
 		virtual void release_resource(Engine* engine) override = 0;
@@ -17,7 +16,7 @@ namespace MESH
 	};
 }
 
-//// export 예제.
+//// export 샘플 코드
 //aiReturn assimp_export(string format, string path)
 //{
 //	aiScene scene;
