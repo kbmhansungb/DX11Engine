@@ -1,7 +1,7 @@
 #pragma once
 
 //////
-// ¿£Áø °³¿ä
+// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 // https://docs.google.com/presentation/d/1myrzT0gSBAm4Yu58ifUpS0y4pMSNwRtS0oKgWJ8000M/edit#slide=id.ge8fa8da02e_0_0
 //
 
@@ -9,7 +9,7 @@
 //////
 // Window
 #include "Window/_Exclude.h"
-// byte¸¦ ´ëÃ¼ ¾îµð¼­ Á¤ÀÇÇÏ´Â°ÅÁö????,
+// byteï¿½ï¿½ ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´Â°ï¿½ï¿½ï¿½????,
 
 //////
 // standard lib
@@ -59,7 +59,7 @@
 #include "ImGui_Sort/_Exclude.h"
 
 //////
-// »ç¿ëÇÏ´Â Á¤ÀÇ´Â ¿©±â·Î ¿Í¾ß ÇÑ´Ù.
+// ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Í¾ï¿½ ï¿½Ñ´ï¿½.
 #include "Template/EditorWindow/EditorDefineContainer.h"
 #include "Component/Graphics/GraphicsDefine.h"
 

@@ -1,0 +1,16 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "기타 파일",
+      "ColorIndex": -1
+    },
+    "07e68a3c-c0ba-43c9-9250-9f1db25415c4": {
+      "ProjectGuid": "07e68a3c-c0ba-43c9-9250-9f1db25415c4",
+      "DisplayName": "DX11Engine",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}

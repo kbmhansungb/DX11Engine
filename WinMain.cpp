@@ -2,33 +2,28 @@
 
 using namespace std;
 
-int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
-	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ LPWSTR lpCmdLine,
-	_In_ int nCmdShow)
+int APIENTRY wWinMain(
+	HINSTANCE hInstance,
+	HINSTANCE hPrevInstance,
+	LPWSTR lpCmdLine,
+	int nCmdShow)
 {
-	// CoInitialize 21.11.15
-	// 
 #pragma region Initialize
 
-	// ÄÚÀÌ´Ï¼È¶óÀÌÁî Å×½ºÆ® 21.11.15
-	// 
-	// CoInitialize¶õ?
+	// coinitialize
 	// https://docs.microsoft.com/en-us/windows/win32/api/objbase/nf-objbase-coinitialize
-	//
-	// ComPtrÀ» »ç¿ëÇÏ±â À§ÇØ¼­ COM ¶óÀÌºê·¯¸®¸¦ ÃÊ±âÈ­
 	if (FAILED(CoInitialize(nullptr)))
 	{
 		ErrorLogger::Log(GetLastError(), "Failed to call ConInitialize.");
 		return -1;
 	}
 
-	// À©µµ¿ì Å¬·¡½º »ý¼º, ÇÁ·Î±×·¥ÀÌ Á¾·áµÉ ¶§ À©µµ¿ì Å¬·¡½º¸¦ ÇØÁ¦ÇÔ. 21.11.15
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. 21.11.15
 	RegistWindowClassExW T(HandleMessageSetup, hInstance, L"Basic");
 
 #pragma endregion
 
-	// ¿£ÁøÀ» »ý¼º, ¿¡µðÅÍ »ý¼º, ·çÇÁÄÝ ½ÇÇà 21.11.15
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 21.11.15
 #pragma region CreateEditor
 
 	unique_ptr<Engine> engine = make_unique<Engine>(hInstance);
